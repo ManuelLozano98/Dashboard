@@ -1,0 +1,14 @@
+{
+    "name": "vendor/admin-dashboard",
+    "description": "Description of project AdminDashboard.",
+    "authors": [
+        {
+            "name": "Usuario",
+            "email": "your@email.here"
+        }
+    ],
+    "require": {
+        "phpunit/phpunit": "9.0.0",
+        "php-webdriver/webdriver": "1.15.2"
+    }
+}
