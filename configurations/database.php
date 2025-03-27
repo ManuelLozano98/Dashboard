@@ -8,13 +8,17 @@
 
 require_once "config.php";
 
-$db = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
+$db = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME) or die('There was an error connecting to the database' . mysqli_errno($db));
 
 function querySQL($sql) {
     global $db;
     $q = $db->query($sql);
-    $db->close();
     return $q;
 }
-
-$db->close();
+function preparedQuerySQL($sql,$types,...$params){
+    global $db;
+    $stmt = $db->prepare($sql);
+    $stmt->bind_param($types,...$params);
+    $q = $stmt->execute();
+    return $q;
+}
