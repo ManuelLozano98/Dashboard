@@ -10,7 +10,7 @@ require_once '../models/category.php';
 
 $category = new Category();
 $params = filter_input_array(INPUT_POST);
-switch ($_GET["do"]) {
+switch (filter_input_array(INPUT_GET)["do"]) {
 
     case "category":
         $response = $category->getCategory($params["idcategory"]);
