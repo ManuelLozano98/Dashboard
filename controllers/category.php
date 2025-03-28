@@ -20,8 +20,8 @@ switch (filter_input_array(INPUT_GET)["do"]) {
         $categories = $category->getCategories();
         $records = $category->getCountCategories();
         $data = array(
-            "totalRecords" => $records,
-            "data" => $records
+                "records" => (int) $records[0]["RECORDS"],
+                "data" => $categories
         );
         echo json_encode($data);
         break;

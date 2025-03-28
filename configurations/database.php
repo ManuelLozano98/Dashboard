@@ -13,7 +13,11 @@ $db = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME) or die('There was a
 function querySQL($sql) {
     global $db;
     $q = $db->query($sql);
-    return $q;
+    $data = [];
+    while($row = mysqli_fetch_assoc($q)){
+        $data[]=$row;
+    }
+    return $data;
 }
 function preparedQuerySQL($sql,$types,...$params){
     global $db;

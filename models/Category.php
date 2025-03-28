@@ -46,7 +46,7 @@ class Category {
     }
 
     public function getCountCategories() {
-        $sql = "SELECT COUNT(*) FROM CATEGORIES";
+        $sql = "SELECT COUNT(*) AS RECORDS FROM CATEGORIES";
         return querySQL($sql);
     }
 
