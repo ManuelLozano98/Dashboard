@@ -10,10 +10,10 @@
         </div>
 
         <?php
-            require_once 'navbar.php';
-            require_once 'aside.php';
-            require_once 'body.php';
-            require_once 'footer.php';
+        require_once 'navbar.php';
+        require_once 'aside.php';
+        require_once 'body.php';
+        require_once 'footer.php';
         ?>
 
         <!-- Control Sidebar -->
@@ -30,8 +30,9 @@
     <script src="<?php echo $ruta; ?>plugins/jquery-ui/jquery-ui.min.js"></script>
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
-        $.widget.bridge('uibutton', $.ui.button)
+        $.widget.bridge('uibutton', $.ui.button);
     </script>
+    <script src="<?php echo $ruta; ?>plugins/datatables/jquery.dataTables.min.js"></script>
     <!-- Bootstrap 4 -->
     <script src="<?php echo $ruta; ?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- ChartJS -->
