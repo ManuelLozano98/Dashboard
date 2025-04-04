@@ -27,7 +27,10 @@
         <link rel="stylesheet" href="<?php echo $ruta; ?>plugins/daterangepicker/daterangepicker.css">
         <!-- summernote -->
         <link rel="stylesheet" href="<?php echo $ruta; ?>plugins/summernote/summernote-bs4.min.css">
+        <!-- Datatable -->
         <link rel="stylesheet" href="<?php echo $ruta; ?>plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
         <link rel="stylesheet" href="<?php echo $ruta; ?>plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
         <link rel="stylesheet" href="<?php echo $ruta; ?>plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+        <!-- Toastr -->
+        <link rel="stylesheet" href="<?php echo $ruta; ?>plugins/toastr/toastr.min.css">
     </head>
