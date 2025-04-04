@@ -127,27 +127,27 @@ require_once 'header.php';
 
     </div>
 
-    <script src="<?php echo $ruta ?>plugins/jquery/jquery.min.js"></script>
+    <script src="<?php echo $route ?>plugins/jquery/jquery.min.js"></script>
     <!-- Bootstrap 4 -->
-    <script src="<?php echo $ruta ?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="<?php echo $route ?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- DataTables  & Plugins -->
-    <script src="<?php echo $ruta ?>plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="<?php echo $ruta ?>plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="<?php echo $ruta ?>plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="<?php echo $ruta ?>plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-    <script src="<?php echo $ruta ?>plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="<?php echo $ruta ?>plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="<?php echo $ruta ?>plugins/jszip/jszip.min.js"></script>
-    <script src="<?php echo $ruta ?>plugins/pdfmake/pdfmake.min.js"></script>
-    <script src="<?php echo $ruta ?>plugins/pdfmake/vfs_fonts.js"></script>
-    <script src="<?php echo $ruta ?>plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="<?php echo $ruta ?>plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="<?php echo $ruta ?>plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-    <script src="<?php echo $ruta ?>plugins/toastr/toastr.min.js"></script>
+    <script src="<?php echo $route ?>plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="<?php echo $route ?>plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="<?php echo $route ?>plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="<?php echo $route ?>plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="<?php echo $route ?>plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="<?php echo $route ?>plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="<?php echo $route ?>plugins/jszip/jszip.min.js"></script>
+    <script src="<?php echo $route ?>plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="<?php echo $route ?>plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="<?php echo $route ?>plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="<?php echo $route ?>plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="<?php echo $route ?>plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <script src="<?php echo $route ?>plugins/toastr/toastr.min.js"></script>
     <!-- AdminLTE App -->
-    <script src="<?php echo $ruta ?>dist/js/adminlte.min.js"></script>
+    <script src="<?php echo $route ?>dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
-    <script src="<?php echo $ruta ?>dist/js/demo.js"></script>
+    <script src="<?php echo $route ?>dist/js/demo.js"></script>
     <!-- Page specific script -->
     <script type="text/javascript" src="../views/js/category.js"></script>
 </body>
