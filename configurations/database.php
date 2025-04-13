@@ -26,3 +26,16 @@ function preparedQuerySQL($sql,$types,...$params){
     $q = $stmt->execute();
     return $q;
 }
+
+function getDataPreparedQuerySQL($sql,$types,...$params){
+    global $db;
+    $stmt = $db->prepare($sql);
+    $stmt->bind_param($types,...$params);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $data = [];
+    while($row = mysqli_fetch_assoc($result)){
+        $data[]=$row;
+    }
+    return $data;
+}
