@@ -20,7 +20,7 @@ require_once 'header.php';
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                <li class="breadcrumb-item"><a href="./">Home</a></li>
                                 <li class="breadcrumb-item active">Categories</li>
                             </ol>
                         </div>
@@ -150,7 +150,7 @@ require_once 'header.php';
     <!-- AdminLTE for demo purposes -->
     <script src="<?php echo $route ?>dist/js/demo.js"></script>
     <!-- Page specific script -->
-    <script type="text/javascript" src="../views/js/category.js"></script>
+    <script type="text/javascript" src="views/js/category.js"></script>
 </body>
 
 </html>
