@@ -100,6 +100,7 @@ require_once 'header.php';
                                                                 <th>Name</th>
                                                                 <th>Description</th>
                                                                 <th>Active</th>
+                                                                <th>Actions</th>
                                                             </thead>
                                                             <tbody>
                                                             </tbody>
