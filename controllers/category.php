@@ -8,38 +8,64 @@
 
 require_once '../models/category.php';
 
-$category = new Category();
-$params = filter_input_array(INPUT_POST);
-switch (filter_input_array(INPUT_GET)["do"]) {
+function getCategories()
+{
+    $category = new Category();
+    $categories = $category->getCategories();
+    echo json_encode($categories);
+}
 
-    case "category":
-        $response = $category->getCategory($params["idcategory"]);
-        echo json_encode($reponse);
-        break;
-    case "categories":
-        $categories = $category->getCategories();
-        $records = $category->getCountCategories();
-        $data = array(
-                "records" => (int) $records[0]["RECORDS"],
-                "data" => $categories
-        );
-        echo json_encode($data);
-        break;
-    case "save":
-        if (!isset($params["idcategory"])) {
-            $response = $category->insert($params["name"], $params["description"]);
-            echo $response ? "Category registered" : "The category could not be registered";
-        } else {
-            $response = $category->edit($params["idcategory"], $params["name"], $params["description"]);
-            echo $response ? "Category successfully updated" : "The category could not be updated";
+function save($method, $request)
+{
+    header('Content-Type: application/json');
+    $validated = validateFields($request);
+    $response = null;
+    if ($validated) {
+        $category = new Category();
+        $response = $category->insertOrEdit($request, $method);
+    } else {
+        $response = [
+            'error' => "Bad Request",
+            'status' => "400",
+            'message' => "Required fields are missing"
+        ];
+    }
+    echo json_encode($response);
+}
+
+function validateFields($params)
+{
+    if (count($params) === 0) {
+        return false;
+    }
+    foreach ($params as $key => $value) {
+        if (empty($key)) {
+            return false;
         }
-        break;
-    case "disable":
-        $response = $category->disable($params["idcategory"]);
-        echo $response ? "Category successfully disabled" : "The category could not be disabled";
-        break;
-    case "enable":
-        $response = $category->enable($params["idcategory"]);
-        echo $response ? "Category successfully enabled" : "The category could not be enabled";
-        break;
+    }
+    return true;
+}
+function deleteCategory($request)
+{
+    header('Content-Type: application/json');
+    $validated = validateFields($request);
+    if ($validated) {
+        $category = new Category();
+        $response = $category->delete($request["id"]);
+        echo json_encode($response);
+    }
+}
+
+function disable()
+{
+    $category = new Category();
+    $response = $category->disable($_REQUEST["idcategory"]);
+    echo $response ? "Category successfully disabled" : "The category could not be disabled";
+}
+
+function enable()
+{
+    $category = new Category();
+    $response = $category->enable($_REQUEST["idcategory"]);
+    echo $response ? "Category successfully enabled" : "The category could not be enabled";
 }
