@@ -1,0 +1,13 @@
+RewriteEngine On
+RewriteBase /AdminDashboard/
+Options -Indexes
+
+# HOME
+RewriteRule ^$ views/index.php [L]
+
+# VIEWS
+RewriteRule ^categories$ views/category.php [L]
+
+# API
+RewriteRule ^api/([a-zA-Z0-9_-]+)$ api/$1.php [L]
+
