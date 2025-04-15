@@ -9,17 +9,53 @@ function init() {
 }
 
 function insert() {
+  let category = {
+    name: $("#name").val(),
+    description: $("#description").val(),
+  };
   $.ajax({
-    url: "../controllers/category.php?do=save",
+    url: "api/categories",
     type: "POST",
-    data: {
-      name: $("#name").val(),
-      description: $("#description").val(),
+    dataType: "json",
+    data: JSON.stringify(category),
+    success: function (response) {
+      if (response.status != "201") {
+        if (response.details) {
+          response.message += response.details.map((element) => {
+            return (
+              `<br> ${Object.keys(element)} => ${Object.values(element)}`
+            );
+          });
+        }
+        toastr.warning(response.message);
+      } else {
+        toastr.success(response.message);
+        getCategories();
+      }
     },
-    success: function (result) {
-      toastr.success(result);
-      getCategories();
-    },
+    error: function (xhr, status, error) {
+      let response = xhr.responseText;
+      let parsed = null;
+      
+      try {
+        parsed = JSON.parse(response);
+      } catch (e) {
+        toastr.error("Unexpected server error");
+        console.error("Server response:", response);
+        return;
+      }
+  
+      let message = parsed.message || "Request error";
+      
+      if (parsed.details && Array.isArray(parsed.details)) {
+        const detailMessages = parsed.details.map((item) => {
+          return Object.values(item).join(", ");
+        }).join("<br>");
+        message += "<br>" + detailMessages;
+      }
+  
+      toastr.error(message, `Error ${parsed.status} - ${parsed.error}`);
+    }
   });
 }
 
@@ -36,9 +72,8 @@ function getCategories() {
       "<'row'<'col-md-4'l><'col-md-4 text-center'B><'col-md-4'f>>" + // Up: Select + Buttons + Search
       "<'row'<'col-md-12'tr>>" + // Table
       "<'row'<'col-md-6'i><'col-md-6'p>>", // Down: Info + Pagination
-
     ajax: {
-      url: "../controllers/category.php?do=categories",
+      url: "api/categories",
       type: "get",
       dataType: "json",
     },
@@ -47,13 +82,19 @@ function getCategories() {
       { data: "name" },
       { data: "description" },
       { data: "active" },
+      {
+        data: null, // Column generated manually
+        title: "Actions",
+        orderable: false, // This column does not allow sorting
+        searchable: false, // This column does not allow searching
+        render: function (data, type, row) {
+          return `
+            <button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button>
+            <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>
+          `;
+        },
+      },
     ],
-    error: function (e) {
-      console.log(e.responseText);
-    },
-    success: function (s) {
-      console.log(s);
-    },
     bDestroy: true,
     iDisplayLength: 10,
     order: [[0, "desc"]],
