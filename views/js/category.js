@@ -22,9 +22,7 @@ function insert() {
       if (response.status != "201") {
         if (response.details) {
           response.message += response.details.map((element) => {
-            return (
-              `<br> ${Object.keys(element)} => ${Object.values(element)}`
-            );
+            return `<br> ${Object.keys(element)} => ${Object.values(element)}`;
           });
         }
         toastr.warning(response.message);
@@ -36,7 +34,7 @@ function insert() {
     error: function (xhr, status, error) {
       let response = xhr.responseText;
       let parsed = null;
-      
+
       try {
         parsed = JSON.parse(response);
       } catch (e) {
@@ -44,17 +42,42 @@ function insert() {
         console.error("Server response:", response);
         return;
       }
-  
+
       let message = parsed.message || "Request error";
-      
+
       if (parsed.details && Array.isArray(parsed.details)) {
-        const detailMessages = parsed.details.map((item) => {
-          return Object.values(item).join(", ");
-        }).join("<br>");
+        const detailMessages = parsed.details
+          .map((item) => {
+            return Object.values(item).join(", ");
+          })
+          .join("<br>");
         message += "<br>" + detailMessages;
       }
-  
+
       toastr.error(message, `Error ${parsed.status} - ${parsed.error}`);
+    },
+  });
+}
+
+function deleteCategory(id) {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: `api/categories?id=${id}`,
+        type: "DELETE",
+        success: function (result) {
+          toastr.success(result.message);
+          getCategories();
+        },
+      });
     }
   });
 }
@@ -90,7 +113,7 @@ function getCategories() {
         render: function (data, type, row) {
           return `
             <button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button>
-            <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>
+            <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Delete" onclick="deleteCategory(${data.id_category})"><i class="fa fa-trash"></i></button>
           `;
         },
       },
