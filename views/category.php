@@ -145,6 +145,7 @@ require_once 'header.php';
     <script src="<?php echo $route ?>plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="<?php echo $route ?>plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
     <script src="<?php echo $route ?>plugins/toastr/toastr.min.js"></script>
+    <script src="<?php echo $route ?>plugins/sweetalert2/sweetalert2.min.js"></script>
     <!-- AdminLTE App -->
     <script src="<?php echo $route ?>dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->

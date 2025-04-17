@@ -33,4 +33,5 @@
         <link rel="stylesheet" href="<?php echo $route; ?>plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
         <!-- Toastr -->
         <link rel="stylesheet" href="<?php echo $route; ?>plugins/toastr/toastr.min.css">
+        <link rel="stylesheet" href="<?php echo $route; ?>plugins/sweetalert2/sweetalert2.min.css">
     </head>
