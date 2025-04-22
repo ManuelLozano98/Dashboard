@@ -81,6 +81,24 @@ function deleteCategory(id) {
     }
   });
 }
+function edit(id) {
+  let category = {
+    id: "",
+    name: $("#name").val(),
+    description: $("#description").val(),
+    active: $("#active").is("checked"),
+  };
+  $.ajax({
+    url: "api/categories",
+    type: "PUT",
+    dataType: "json",
+    data: JSON.stringify(category),
+    success: function (result) {
+      toastr.success(result);
+      getCategories();
+    },
+  });
+}
 
 function getCategories() {
   $("#tableCategories").DataTable({
@@ -112,7 +130,7 @@ function getCategories() {
         searchable: false, // This column does not allow searching
         render: function (data, type, row) {
           return `
-            <button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button>
+            <button class="btn btn-success btn-sm rounded-0" type="button" data-toggle="modal" data-target="#modal-edit-default" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button>
             <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Delete" onclick="deleteCategory(${data.id_category})"><i class="fa fa-trash"></i></button>
           `;
         },
