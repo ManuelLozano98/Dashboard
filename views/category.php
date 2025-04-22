@@ -73,6 +73,56 @@ require_once 'header.php';
             </div>
             <!-- /.modal -->
 
+            <div class="modal fade" id="modal-edit-default">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Edit Category</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form name="form-edit" id="form-edit" method="POST">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="edit-name">Name</label>
+                                            <input type="hidden" name="edit-idcategory" id="edit-idcategory">
+                                            <input type="text" class="form-control" name="edit-name" id="edit-name"
+                                                placeholder="Write a name for a category" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <label for="edit-description" class="form-label fw-semibold">Description</label>
+                                        <textarea id="edit-description" class="form-control" rows="4" maxlength="255" oninput="updateCounter()" placeholder="Write here..."></textarea>
+                                        <div class="text-end text-muted mt-1">
+                                            <span id="counter">0/255</span>
+                                        </div>
+                                    </div>
+                                    <div class="custom-control custom-switch">
+                                        <label class="custom-control-label" for="customSwitch1">Active</label>
+                                        <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                                    </div>
+
+
+                                </div>
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" onclick="edit()">Save changes</button>
+                                </div>
+
+                            </form>
+                        </div>
+
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
+
+
             <!-- Main content -->
             <section class="content">
                 <div class="row">
@@ -146,6 +196,7 @@ require_once 'header.php';
     <script src="<?php echo $route ?>plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
     <script src="<?php echo $route ?>plugins/toastr/toastr.min.js"></script>
     <script src="<?php echo $route ?>plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script src="<?php echo $route ?>plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
     <!-- AdminLTE App -->
     <script src="<?php echo $route ?>dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
