@@ -91,7 +91,7 @@ class Category
         return $this->buildResponse();
     }
 
-    private function edit($id, $name, $description)
+    private function edit($id, $name, $description,$active)
     {
         $dbCategory = $this->findById($id);
         if (!$dbCategory) {
@@ -110,10 +110,10 @@ class Category
             }
         }
 
-        $sql = "UPDATE CATEGORIES SET NAME=?, description=? WHERE ID_CATEGORY=?";
-        preparedQuerySQL($sql, "ssi", $name, $description, $id);
+        $sql = "UPDATE CATEGORIES SET NAME=?, description=?, active=? WHERE ID_CATEGORY=?";
+        preparedQuerySQL($sql, "ssii", $name, $description,$active, $id);
         $this->setError(null);
-        $this->setStatus("204");
+        $this->setStatus("201");
         $this->setMessage("Category updated successfully");
         $this->setData($this->findById($id));
         return $this->buildResponse();
@@ -188,7 +188,7 @@ class Category
             if ($method === "POST") {
                 return $this->insert($data["name"], $data["description"]);
             } else {
-                return $this->edit($data["id"], $data["name"], $data["description"]);
+                 return $this->edit($data["id"],$data["name"], $data["description"],$data["active"]);
             }
         }
         return $flag;
