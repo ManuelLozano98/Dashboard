@@ -50,7 +50,8 @@ require_once 'header.php';
                                     </div>
                                     <div class="col-sm-12">
                                         <label for="description" class="form-label fw-semibold">Description</label>
-                                        <textarea id="description" class="form-control" rows="4" maxlength="255" oninput="updateCounter()" placeholder="Write here..."></textarea>
+                                        <textarea id="description" class="form-control" rows="4" maxlength="255"
+                                            oninput="updateCounter()" placeholder="Write here..."></textarea>
                                         <div class="text-end text-muted mt-1">
                                             <span id="counter">0/255</span>
                                         </div>
@@ -60,7 +61,8 @@ require_once 'header.php';
                                 </div>
                                 <div class="modal-footer justify-content-between">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="insert()">Save changes</button>
+                                    <button type="button" class="btn btn-primary" onclick="insert()">Save
+                                        changes</button>
                                 </div>
 
                             </form>
@@ -90,19 +92,20 @@ require_once 'header.php';
                                             <label for="edit-name">Name</label>
                                             <input type="hidden" name="edit-idcategory" id="edit-idcategory">
                                             <input type="text" class="form-control" name="edit-name" id="edit-name"
-                                                placeholder="Write a name for a category" required>
+                                                placeholder="Write a name for a category" value="" required>
                                         </div>
                                     </div>
                                     <div class="col-sm-12">
                                         <label for="edit-description" class="form-label fw-semibold">Description</label>
-                                        <textarea id="edit-description" class="form-control" rows="4" maxlength="255" oninput="updateCounter()" placeholder="Write here..."></textarea>
+                                        <textarea id="edit-description" class="form-control" rows="4" maxlength="255"
+                                            oninput="updateCounter()" placeholder="Write here..." value=""></textarea>
                                         <div class="text-end text-muted mt-1">
                                             <span id="counter">0/255</span>
                                         </div>
                                     </div>
                                     <div class="custom-control custom-switch">
-                                        <label class="custom-control-label" for="customSwitch1">Active</label>
                                         <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                                        <label class="custom-control-label" for="customSwitch1">Active</label>
                                     </div>
 
 
@@ -136,7 +139,10 @@ require_once 'header.php';
                                         <div class="col-12">
                                             <div class="card">
                                                 <div class="card-header">
-                                                    <h2 class="box-title">Category <button class="btn btn-success" id="addBtn" data-toggle="modal" data-target="#modal-default"><i class="fa fa-plus-circle"></i>
+                                                    <h2 class="box-title">Category <button class="btn btn-success"
+                                                            id="addBtn" data-toggle="modal"
+                                                            data-target="#modal-default"><i
+                                                                class="fa fa-plus-circle"></i>
                                                             Add</button></h2>
                                                     <h3 class="card-title">Data</h3>
                                                 </div>
