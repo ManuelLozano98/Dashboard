@@ -22,55 +22,45 @@ class Category
     private $active;
 
     private Response $response;
-    
-    function __construct(){
+
+    function __construct()
+    {
         $this->response = new Response();
     }
 
 
     private function insert($name, $description = "")
     {
-
         if ($this->findByName($name)) {
-            $this->response->setError("Conflict");
-            $this->response->setMessage("This category does already exists");
-            $this->response->setStatus("409");
+            $this->response->getAddConflictMessage("Category");
             return $this->response->buildResponse();
         }
 
         $sql = "INSERT INTO CATEGORIES (name,description,active) VALUES (?,?,'1')";
         preparedQuerySQL($sql, "ss", $name, $description);
-        $this->response->setError(null);
-        $this->response->setStatus("201");
-        $this->response->setMessage("Category created successfully");
+        $this->response->getCreatedSuccesfullyMessage("Category");
         $this->response->setData($this->findByName($name));
         return $this->response->buildResponse();
     }
 
-    private function edit($id, $name, $description,$active)
+    private function edit($id, $name, $description, $active)
     {
         $dbCategory = $this->findById($id);
         if (!$dbCategory) {
-            $this->response->setError("Category not found");
-            $this->response->setStatus("404");
-            $this->response->setMessage("This category cannot be updated because it does not exist");
+            $this->response->getUpdatedNotFoundMessage("Category");
             return $this->response->buildResponse();
         }
         $nameTaken = $this->findByName($name);
         if ($nameTaken) {
             if ($nameTaken[0]["name"] === $name && $dbCategory["id_category"] !== $nameTaken[0]["id_category"]) { // Checks if the name of the category is already taken
-                $this->response->setError("Conflict");
-                $this->response->setMessage("This category cannot be updated because it already exists");
-                $this->response->setStatus("409");
+                $this->response->getUpdatedExistsMessage(("Category"));
                 return $this->response->buildResponse();
             }
         }
 
         $sql = "UPDATE CATEGORIES SET NAME=?, description=?, active=? WHERE ID_CATEGORY=?";
-        preparedQuerySQL($sql, "ssii", $name, $description,$active, $id);
-        $this->response->setError(null);
-        $this->response->setStatus("201");
-        $this->response->setMessage("Category updated successfully");
+        preparedQuerySQL($sql, "ssii", $name, $description, $active, $id);
+        $this->response->getUpdatedSuccesfullyMessage("Category");
         $this->response->setData($this->findById($id));
         return $this->response->buildResponse();
     }
@@ -78,17 +68,12 @@ class Category
     {
         $dbCategory = $this->findById($id);
         if (!$dbCategory) {
-            $this->response->setError("Category not found");
-            $this->response->setStatus("404");
-            $this->response->setMessage("This category cannot be deleted because it does not exist");
+            $this->response->getDeletedNotFoundMessage("Category");
             return $this->response->buildResponse();
         }
         $sql = "DELETE FROM CATEGORIES WHERE ID_CATEGORY = ?";
         preparedQuerySQL($sql, "i", $id);
-        $this->response->setError(null);
-        $this->response->setStatus("204");
-        $this->response->setMessage("Category deleted successfully");
-        $this->response->setData(null);
+        $this->response->getDeletedSuccesfullyMessage("Category");
         return $this->response->buildResponse();
     }
 
@@ -144,16 +129,14 @@ class Category
             if ($method === "POST") {
                 return $this->insert($data["name"], $data["description"]);
             } else {
-                 return $this->edit($data["id"],$data["name"], $data["description"],$data["active"]);
+                return $this->edit($data["id"], $data["name"], $data["description"], $data["active"]);
             }
         }
         return $flag;
     }
     private function validateFields($fields, $method)
     {
-        $this->response->setStatus("400");
-        $this->response->setError("Bad Request");
-        $this->response->setMessage("Required fields are missing");
+        $this->response->getRequiredFieldsMissingMessage();
         if ($method === "POST") {
             if (isset($fields["name"])) {
                 if (!empty($fields["name"])) {
@@ -163,15 +146,17 @@ class Category
             $this->response->setDetails(['name' => "This field is required"]);
             return $this->response->buildResponse();
         } else {
-            if (!isset($fields["id"])) $this->response->setDetails(['id' => "This field is required"]);
-            if (!isset($fields["name"])) $this->response->setDetails(['name' => "This field is required"]);
+            if (!isset($fields["id"]))
+                $this->response->setDetails(['id' => "This field is required"]);
+            if (!isset($fields["name"]))
+                $this->response->setDetails(['name' => "This field is required"]);
             return $this->response->getDetails() ? $this->response->buildResponse() : true;
         }
     }
 
     /**
      * Get the value of active
-     */ 
+     */
     public function getActive()
     {
         return $this->active;
@@ -181,7 +166,7 @@ class Category
      * Set the value of active
      *
      * @return  self
-     */ 
+     */
     public function setActive($active)
     {
         $this->active = $active;
@@ -191,7 +176,7 @@ class Category
 
     /**
      * Get the value of description
-     */ 
+     */
     public function getDescription()
     {
         return $this->description;
@@ -201,7 +186,7 @@ class Category
      * Set the value of description
      *
      * @return  self
-     */ 
+     */
     public function setDescription($description)
     {
         $this->description = $description;
@@ -211,7 +196,7 @@ class Category
 
     /**
      * Get the value of name
-     */ 
+     */
     public function getName()
     {
         return $this->name;
@@ -221,7 +206,7 @@ class Category
      * Set the value of name
      *
      * @return  self
-     */ 
+     */
     public function setName($name)
     {
         $this->name = $name;
@@ -231,7 +216,7 @@ class Category
 
     /**
      * Get the value of id
-     */ 
+     */
     public function getId()
     {
         return $this->id;
@@ -241,7 +226,7 @@ class Category
      * Set the value of id
      *
      * @return  self
-     */ 
+     */
     public function setId($id)
     {
         $this->id = $id;

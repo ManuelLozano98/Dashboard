@@ -7,6 +7,11 @@ class Response
     private $error;
     private $details = [];
 
+    public function __construct()
+    {
+
+    }
+
     public function getMessage()
     {
         return $this->message;
@@ -66,6 +71,66 @@ class Response
             'details' => !empty($this->getDetails()) ? $this->getDetails() : null,
             'data' => !empty($this->getData()) ? $this->getData() : null,
         ];
+
+
     }
+
+    public function getAddConflictMessage($tableName)
+    {
+        $this->setError("Conflict");
+        $this->setMessage("This $tableName does already exists");
+        $this->setStatus("409");
+    }
+
+    public function getCreatedSuccesfullyMessage($tableName)
+    {
+        $this->setError(null);
+        $this->setStatus("201");
+        $this->setMessage("$tableName created successfully");
+    }
+    public function getUpdatedNotFoundMessage($tableName)
+    {
+        $this->setError("Category not found");
+        $this->setStatus("404");
+        $this->setMessage("This $tableName cannot be updated because it does not exist");
+    }
+    public function getUpdatedExistsMessage($tableName)
+    {
+        $this->setError("Conflict");
+        $this->setMessage("This $tableName cannot be updated because it already exists");
+        $this->setStatus("409");
+    }
+
+    public function getUpdatedSuccesfullyMessage($tableName)
+    {
+        $this->setError(null);
+        $this->setStatus("201");
+        $this->setMessage("$tableName updated successfully");
+    }
+
+    public function getDeletedNotFoundMessage($tableName)
+    {
+        $this->setError("$tableName not found");
+        $this->setStatus("404");
+        $this->setMessage("This $tableName cannot be deleted because it does not exist");
+    }
+
+    public function getDeletedSuccesfullyMessage($tableName)
+    {
+        $this->setError(null);
+        $this->setStatus("204");
+        $this->setMessage("$tableName deleted successfully");
+        $this->setData(null);
+    }
+
+    public function getRequiredFieldsMissingMessage()
+    {
+        $this->setStatus("400");
+        $this->setError("Bad Request");
+        $this->setMessage("Required fields are missing");
+    }
+
+
+
 
 }
