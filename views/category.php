@@ -205,8 +205,8 @@ require_once 'header.php';
     <script src="<?php echo $route ?>plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
     <!-- AdminLTE App -->
     <script src="<?php echo $route ?>dist/js/adminlte.min.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="<?php echo $route ?>dist/js/demo.js"></script>
+    <!-- Generic script for utilities -->
+    <script type="text/javascript" src="views/js/utils.js"></script>
     <!-- Page specific script -->
     <script type="text/javascript" src="views/js/category.js"></script>
 </body>
