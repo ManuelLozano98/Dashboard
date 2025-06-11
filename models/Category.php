@@ -109,6 +109,16 @@ class Category
         );
         return $data;
     }
+    public function getCategoriesName(){
+        $sql = "SELECT NAME FROM CATEGORIES";
+        $records = $this->getCountCategories();
+        $query = querySQL($sql);
+        $data = array(
+            "records" => (int) $records[0]["RECORDS"],
+            "data" => $query
+        );
+        return $data;
+    }
 
     public function getCountCategories()
     {

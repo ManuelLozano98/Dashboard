@@ -15,6 +15,12 @@ function getCategories()
     echo json_encode($categories);
 }
 
+function getCategoriesName(){
+    $category = new Category();
+    $categories = $category->getCategoriesName();
+    echo json_encode($categories);
+}
+
 function save($method, $request)
 {
     header('Content-Type: application/json');
