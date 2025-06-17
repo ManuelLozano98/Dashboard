@@ -59,20 +59,20 @@ require_once 'header.php';
                             </ul>
 
                             <!-- Form -->
-                            <form id="form" method="POST">
+                            <form id="form" method="POST" enctype="multipart/form-data">
                                 <div class="tab-content mt-3">
                                     <!-- Tab 1 -->
                                     <div class="tab-pane fade show active" id="tab1" role="tabpanel">
                                         <div class="form-group">
                                             <label for="name">Name</label>
-                                            <input type="hidden" name="idarticle" id="idarticle">
                                             <input type="text" class="form-control" name="name" id="name"
                                                 placeholder="Write a name" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="description">Description</label>
-                                            <textarea id="description" class="form-control" rows="4" maxlength="255"
-                                                oninput="updateCounter()" placeholder="Write here..."></textarea>
+                                            <textarea id="description" name="description" class="form-control" rows="4"
+                                                maxlength="255" oninput="updateCounter()"
+                                                placeholder="Write here..."></textarea>
                                             <small class="form-text text-muted text-right">
                                                 <span id="counter">0/255</span>
                                             </small>
@@ -85,6 +85,20 @@ require_once 'header.php';
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label for="code">Product Code</label>
+                                                <button type="button" id="generate-code"  style="margin-left: 5px"
+                                                    class="btn btn-primary btn-sm">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        fill="currentColor" class="bi bi-arrow-clockwise"
+                                                        viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd"
+                                                            d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z">
+                                                        </path>
+                                                        <path
+                                                            d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466">
+                                                        </path>
+                                                    </svg>
+                                                    Generate code
+                                                </button>
                                                 <input type="number" min="0" class="form-control" name="code" id="code"
                                                     required>
                                             </div>
@@ -95,7 +109,7 @@ require_once 'header.php';
                                     <div class="tab-pane fade" id="tab2" role="tabpanel">
                                         <div class="form-group">
                                             <label for="categorySelect">Select Category</label>
-                                            <select id="categorySelect" class="form-control">
+                                            <select id="categorySelect" name="id_category" class="form-control">
                                             </select>
                                         </div>
                                     </div>
@@ -104,7 +118,7 @@ require_once 'header.php';
                                     <div class="tab-pane fade" id="tab3" role="tabpanel">
                                         <div class="form-group">
                                             <label>Add an image</label>
-                                            <input type="file" class="form-control-file">
+                                            <input type="file" id="image" name="image" class="form-control-file">
                                         </div>
                                     </div>
                                 </div>
