@@ -31,20 +31,42 @@ class Article
 
     private function insert($article)
     {
-
         if ($this->findByName($article["name"]) || $this->findByCode($article["code"])) {
             $this->response->getAddConflictMessage("Article");
             return $this->response->buildResponse();
-            
-        }
 
-        $sql = "INSERT INTO ARTICLES VALUES (?,?,?,?,?,?,?,?)";
-        preparedQuerySQL($sql, "iissssii", $article["id_article"],$article["id_category"],$article["code"],$article["name"],$article["description"],$article["image"],$article["stock"],1);
+        }
+        $img = "";
+        if (isset($_FILES["image"]) && $_FILES["image"]['error'] === UPLOAD_ERR_OK) {
+            $img = $this->saveImage($_FILES["image"]);
+        }
+        $sql = "INSERT INTO ARTICLES (ID_CATEGORY, CODE, NAME, DESCRIPTION, IMAGE, STOCK, ACTIVE) VALUES (?,?,?,?,?,?,?)";
+        preparedQuerySQL($sql, "issssii", $article["id_category"], $article["code"], $article["name"], $article["description"], $img, $article["stock"], 1);
         $this->response->getCreatedSuccesfullyMessage("Article");
         $this->response->setData($this->findByName($article["name"]));
         return $this->response->buildResponse();
     }
 
+    private function saveImage($img)
+    {
+        $tmpName = $img['tmp_name'];
+        $fileName = basename($img['name']);
+        $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        if (in_array($fileExt, $allowed)) {
+            $newName = uniqid() . '.' . $fileExt;
+            $uploadPath = '../articles_img/' . $newName;
+
+            if (move_uploaded_file($tmpName, $uploadPath)) {
+                return $newName;
+            } else {
+                return "File couldnt move";
+            }
+        } else {
+            return "Ext not allowed";
+        }
+    }
     private function edit($data)
     {
         // $dbArticle = $this->findById($id);
@@ -71,6 +93,17 @@ class Article
         // $this->response->setMessage("Article updated successfully");
         // $this->response->setData($this->findById($id));
         // return $this->response->buildResponse();
+    }
+    public function existsCode($code)
+    {
+        $data = $this->findByCode($code);
+        if (count($data) <= 0) {
+            $this->response->setError("OK");
+            return $this->response->buildResponse();
+        }
+        $this->response->setError("Code exists");
+        return $this->response->buildResponse();
+
     }
     public function delete($id)
     {
@@ -118,7 +151,7 @@ class Article
         return $data;
     }
 
-        public function findByCode($code)
+    public function findByCode($code)
     {
         $sql = "SELECT * FROM ARTICLES WHERE CODE = ?";
         $data = getDataPreparedQuerySQL($sql, "i", $code);
@@ -131,7 +164,7 @@ class Article
             if ($method === "POST") {
                 return $this->insert($data);
             } else {
-                 return $this->edit($data);
+                return $this->edit($data);
             }
         }
         return $flag;
