@@ -110,7 +110,7 @@ class Category
         return $data;
     }
     public function getCategoriesName(){
-        $sql = "SELECT NAME FROM CATEGORIES";
+        $sql = "SELECT ID_CATEGORY, NAME FROM CATEGORIES";
         $records = $this->getCountCategories();
         $query = querySQL($sql);
         $data = array(
