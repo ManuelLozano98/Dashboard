@@ -16,7 +16,7 @@ function init() {
   document.getElementById("generate-code").addEventListener("click", function (event) {
     event.preventDefault();
     generateCode();
-  })
+  });
   loadEditForm();
 }
 
@@ -158,6 +158,10 @@ function generateCode() {
   validateCode(code.value);
 }
 
+function generateBarCode(code){
+  JsBarcode("#barcode", code);
+}
+
 function validateCode(code) {
   $.ajax({
     url: `api/articles?code=${code}`,
@@ -167,6 +171,7 @@ function validateCode(code) {
     if (result.error === "OK") {
       $("#code").removeClass("is-invalid");
       $("#code").addClass("is-valid");
+      generateBarCode(code);
     }
     else {
       $("#code").removeClass("is-valid");

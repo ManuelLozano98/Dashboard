@@ -85,7 +85,7 @@ require_once 'header.php';
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label for="code">Product Code</label>
-                                                <button type="button" id="generate-code"  style="margin-left: 5px"
+                                                <button type="button" id="generate-code" style="margin-left: 5px"
                                                     class="btn btn-primary btn-sm">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                         fill="currentColor" class="bi bi-arrow-clockwise"
@@ -101,6 +101,7 @@ require_once 'header.php';
                                                 </button>
                                                 <input type="number" min="0" class="form-control" name="code" id="code"
                                                     required>
+                                                <svg id="barcode"></svg>
                                             </div>
                                         </div>
                                     </div>
@@ -268,6 +269,7 @@ require_once 'header.php';
     <script src="<?php echo $route ?>plugins/toastr/toastr.min.js"></script>
     <script src="<?php echo $route ?>plugins/sweetalert2/sweetalert2.min.js"></script>
     <script src="<?php echo $route ?>plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+    <script src="<?php echo $route ?>plugins/jsbarcode/JsBarcode.all.min.js"></script>
     <!-- AdminLTE App -->
     <script src="<?php echo $route ?>dist/js/adminlte.min.js"></script>
     <!-- Generic script for utilities -->
