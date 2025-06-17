@@ -14,6 +14,10 @@ function getArticles()
     $articles = $article->getArticles();
     echo json_encode($articles);
 }
+function checkIfExitsCode($code){
+    $article = new Article();
+    echo json_encode($article->existsCode($code));
+}
 
 function save($method, $request)
 {
