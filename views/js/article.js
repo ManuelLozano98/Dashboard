@@ -82,7 +82,16 @@ function getArticles() {
       { data: "code" },
       { data: "description" },
       { data: "id_category" },
-      { data: "image" },
+      {
+        data: "image",
+        render: function (data) {
+          let result = "No image found";
+          if (data !== "") {
+            result = `<img alt="${data.substring(0, data.indexOf("."))}" src="articles_img/${data}" width="100px" height="100px"/>`;
+          }
+          return result;
+        }
+      },
       { data: "stock" },
       { data: "active" },
       getActionsColumnDataTable(),
@@ -150,7 +159,7 @@ function generateCode() {
 }
 
 function validateCode(code) {
-  $.ajax({  
+  $.ajax({
     url: `api/articles?code=${code}`,
     type: "GET",
     dataType: "json"
