@@ -112,7 +112,7 @@ class Article
             $this->response->getDeletedNotFoundMessage("Article");
             return $this->response->buildResponse();
         }
-        $sql = "DELETE FROM ARTICLES WHERE ID_CATEGORY = ?";
+        $sql = "DELETE FROM ARTICLES WHERE ID_ARTICLE = ?";
         preparedQuerySQL($sql, "i", $id);
         $this->response->getDeletedSuccesfullyMessage("Article");
         $this->response->setData(null);
@@ -121,7 +121,7 @@ class Article
 
     public function findById($id)
     {
-        $sql = "SELECT * FROM ARTICLES WHERE ID_CATEGORY=?";
+        $sql = "SELECT * FROM ARTICLES WHERE ID_ARTICLE=?";
         $data = getDataPreparedQuerySQL($sql, "i", $id);
         return $data ? $data[0] : null;
     }
