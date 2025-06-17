@@ -9,6 +9,14 @@ function init() {
   document.getElementById("tab2-tab").addEventListener("click", function () { // When user clicks the section "Categories" on modal it loads the name of the categories 
     loadCategories();
   });
+  document.getElementById("code").addEventListener("input", debounce(function () {
+    validateCode(this.value);
+  }, 500)
+  );
+  document.getElementById("generate-code").addEventListener("click", function (event) {
+    event.preventDefault();
+    generateCode();
+  })
   loadEditForm();
 }
 
@@ -18,6 +26,8 @@ function insert() {
     url: "api/articles",
     type: "POST",
     data: form,
+    processData: false,
+    contentType: false,
     success: function (response) {
       getSuccessResponse(response);
     },
@@ -121,6 +131,7 @@ function loadCategories() {
         for (let index = 0; index < result["data"].length; index++) {
           let option = document.createElement("option");
           option.text = result["data"][index].NAME;
+          option.value = result["data"][index].ID_CATEGORY;
           let select = document.getElementById("categorySelect");
           select.appendChild(option);
         }
@@ -131,6 +142,36 @@ function loadCategories() {
 
 
   }
+}
+function generateCode() {
+  let code = document.getElementById("code");
+  code.value = Date.now() + Math.floor(Math.random());
+  validateCode(code.value);
+}
+
+function validateCode(code) {
+  $.ajax({  
+    url: `api/articles?code=${code}`,
+    type: "GET",
+    dataType: "json"
+  }).done(function (result) {
+    if (result.error === "OK") {
+      $("#code").removeClass("is-invalid");
+      $("#code").addClass("is-valid");
+    }
+    else {
+      $("#code").removeClass("is-valid");
+      $("#code").addClass("is-invalid");
+    }
+  });
+}
+
+function debounce(func, delay) {
+  let timeout;
+  return function () {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, arguments), delay);
+  };
 }
 
 function getSuccessResponse(response) {
