@@ -147,30 +147,91 @@ require_once 'header.php';
                             </button>
                         </div>
                         <div class="modal-body">
+                            <!-- Tabs -->
+                            <ul class="nav nav-tabs" id="edit-formTabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="edit-tab1-tab" data-toggle="tab" href="#edit-tab1"
+                                        role="tab">Article data</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="edit-tab2-tab" data-toggle="tab" href="#edit-tab2"
+                                        role="tab">Categories</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="edit-tab3-tab" data-toggle="tab" href="#edit-tab3"
+                                        role="tab">Images</a>
+                                </li>
+                            </ul>
                             <form name="form-edit" id="form-edit" method="POST">
-                                <div class="row">
-                                    <div class="col-sm-12">
+                                <div class="tab-content mt-3">
+                                    <!-- Tab 1 -->
+                                    <div class="tab-pane fade show active" id="edit-tab1" role="tabpanel">
                                         <div class="form-group">
                                             <label for="edit-name">Name</label>
-                                            <input type="hidden" name="edit-idarticle" id="edit-idarticle">
                                             <input type="text" class="form-control" name="edit-name" id="edit-name"
-                                                placeholder="Write a name for a article" value="" required>
+                                                placeholder="Write a name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="edit-description">Description</label>
+                                            <textarea id="edit-description" name="edit-description" class="form-control"
+                                                rows="4" maxlength="255" oninput="updateCounter()"
+                                                placeholder="Write here..."></textarea>
+                                            <small class="form-text text-muted text-right">
+                                                <span id="edit-counter">0/255</span>
+                                            </small>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="edit-stock">Stock</label>
+                                                <input type="number" min="0" class="form-control" name="edit-stock"
+                                                    id="edit-stock" required>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="edit-code">Product Code</label>
+                                                <button type="button" id="edit-generate-code" style="margin-left: 5px"
+                                                    class="btn btn-primary btn-sm">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        fill="currentColor" class="bi bi-arrow-clockwise"
+                                                        viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd"
+                                                            d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z">
+                                                        </path>
+                                                        <path
+                                                            d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466">
+                                                        </path>
+                                                    </svg>
+                                                    Generate code
+                                                </button>
+                                                <input type="number" min="0" class="form-control" name="edit-code"
+                                                    id="edit-code" required>
+                                                <svg id="edit-barcode"></svg>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                                                <label class="custom-control-label" for="customSwitch1">Active</label>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-12">
-                                        <label for="edit-description" class="form-label fw-semibold">Description</label>
-                                        <textarea id="edit-description" class="form-control" rows="4" maxlength="255"
-                                            oninput="updateCounter()" placeholder="Write here..." value=""></textarea>
-                                        <div class="text-end text-muted mt-1">
-                                            <span id="counter">0/255</span>
+
+                                    <!-- Tab 2 -->
+                                    <div class="tab-pane fade" id="edit-tab2" role="tabpanel">
+                                        <div class="form-group">
+                                            <label for="edit-categorySelect">Select Category</label>
+                                            <select id="edit-categorySelect" name="edit-id_category"
+                                                class="form-control">
+                                            </select>
                                         </div>
                                     </div>
-                                    <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                                        <label class="custom-control-label" for="customSwitch1">Active</label>
+
+                                    <!-- Tab 3 -->
+                                    <div class="tab-pane fade" id="edit-tab3" role="tabpanel">
+                                        <div class="form-group">
+                                            <label for="edit-image">Upload or change image</label>
+                                            <input type="file" id="edit-image" name="edit-image"
+                                                class="form-control-file">
+                                            <img width="200px" height="200px" alt="edit-img" id="edit-img" />
+                                        </div>
                                     </div>
-
-
                                 </div>
                                 <div class="modal-footer justify-content-between">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
