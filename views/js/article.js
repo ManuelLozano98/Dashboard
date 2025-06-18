@@ -7,17 +7,26 @@
 function init() {
   getArticles();
   document.getElementById("tab2-tab").addEventListener("click", function () { // When user clicks the section "Categories" on modal it loads the name of the categories 
-    loadCategories();
+    loadCategories("categorySelect");
   });
-  document.getElementById("code").addEventListener("input", debounce(function () {
-    validateCode(this.value);
+  validateCodeByUser("code", "barcode"); // Validate code when user tries to add an article
+  setupGenerateCode("generate-code", "barcode", "code");
+  loadEditForm();
+  setupGenerateCode("edit-generate-code", "edit-barcode", "edit-code");
+  validateCodeByUser("edit-code", "edit-barcode"); // Validate code when user tries to edit an article
+}
+
+function validateCodeByUser(codeId, barcodeId) {
+  document.getElementById(codeId).addEventListener("input", debounce(function () {
+    validateCode(barcodeId, this.value);
   }, 500)
   );
-  document.getElementById("generate-code").addEventListener("click", function (event) {
+}
+function setupGenerateCode(buttonId, barcodeId, codeId) {
+  document.getElementById(buttonId).addEventListener("click", function (event) {
     event.preventDefault();
-    generateCode();
+    generateCode(barcodeId, codeId);
   });
-  loadEditForm();
 }
 
 function insert() {
@@ -119,6 +128,24 @@ function loadEditForm() {
     $("#edit-name").val(data.name);
     $("#edit-idarticle").val(data.id_article);
     $("#edit-description").text(data.description);
+    $("#edit-stock").val(data.stock);
+    $("#edit-code").val(data.code);
+    generateBarCode("#edit-barcode", data.code);
+    loadCategories("edit-categorySelect");
+    for (let element of document.getElementById("edit-categorySelect").children) { // Find the category to which the article belongs
+      element.removeAttribute("selected");
+      if (data.id_category === element.value) {
+        element.setAttribute("selected", true);
+      }
+    }
+    if (data.image !== "") { // If the image exists will show up
+      $("#edit-img").show();
+      $("#edit-img").attr("src", "articles_img/" + data.image);
+    }
+    else { // If the image does not exists will hide
+      $("#edit-img").hide();
+    }
+
     data.active === "0" ? $("#customSwitch1").prop("checked", false) : $("#customSwitch1").prop("checked", true);
   });
 }
@@ -133,15 +160,15 @@ function getCategories() {
 }
 
 
-function loadCategories() {
-  if (document.getElementById("categorySelect").children.length <= 0) {
+function loadCategories(selectHtml) {
+  if (document.getElementById(selectHtml).children.length <= 0) {
     getCategories()
       .done(function (result) {
         for (let index = 0; index < result["data"].length; index++) {
           let option = document.createElement("option");
           option.text = result["data"][index].NAME;
           option.value = result["data"][index].ID_CATEGORY;
-          let select = document.getElementById("categorySelect");
+          let select = document.getElementById(selectHtml);
           select.appendChild(option);
         }
       })
@@ -152,17 +179,18 @@ function loadCategories() {
 
   }
 }
-function generateCode() {
-  let code = document.getElementById("code");
+function generateCode(element, elementId) {
+  let code = document.getElementById(elementId);
   code.value = Date.now() + Math.floor(Math.random());
-  validateCode(code.value);
+  validateCode(element, code.value);
 }
 
-function generateBarCode(code){
-  JsBarcode("#barcode", code);
+function generateBarCode(element, code) {
+  JsBarcode(element, code);
+  $(element).attr("width", "200px");
 }
 
-function validateCode(code) {
+function validateCode(element, code) {
   $.ajax({
     url: `api/articles?code=${code}`,
     type: "GET",
@@ -171,7 +199,7 @@ function validateCode(code) {
     if (result.error === "OK") {
       $("#code").removeClass("is-invalid");
       $("#code").addClass("is-valid");
-      generateBarCode(code);
+      generateBarCode("#" + element, code);
     }
     else {
       $("#code").removeClass("is-valid");
