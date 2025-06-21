@@ -7,19 +7,6 @@
 function init() {
   getArticles();
   document.getElementById("tab2-tab").addEventListener("click", function () { // When user clicks the section "Categories" on modal it loads the name of the categories 
-<<<<<<< HEAD
-    loadCategories();
-  });
-  document.getElementById("code").addEventListener("input", debounce(function () {
-    validateCode(this.value);
-  }, 500)
-  );
-  document.getElementById("generate-code").addEventListener("click", function (event) {
-    event.preventDefault();
-    generateCode();
-  })
-  loadEditForm();
-=======
     loadCategories("categorySelect");
   });
   loadButtonsAction();
@@ -42,7 +29,6 @@ function setupGenerateCode(buttonId, barcodeId, codeId) {
     event.preventDefault();
     generateCode(barcodeId, codeId);
   });
->>>>>>> develop
 }
 
 function insert() {
@@ -54,11 +40,7 @@ function insert() {
     processData: false,
     contentType: false,
     success: function (response) {
-<<<<<<< HEAD
-      getSuccessResponse(response);
-=======
       getSuccessResponse(response, getArticles);
->>>>>>> develop
     },
     error: function (xhr) {
       getErrorResponse(xhr);
@@ -76,26 +58,14 @@ function deleteItem(id) {
           toastr.success(result.message);
           getArticles();
         },
-<<<<<<< HEAD
-=======
         error: function (xhr) {
           getErrorResponse(xhr);
         },
->>>>>>> develop
       });
     }
   });
 }
 function edit() {
-<<<<<<< HEAD
-  let form = new FormData($("#edit-form")[0]);
-  $.ajax({
-    url: "api/articles",
-    type: "PUT",
-    data: form,
-    success: function (result) {
-      getSuccessResponse(result);
-=======
   let form = new FormData($("#form-edit")[0]);
   form.append("id_article", $("#articleId").val());
   form.append("_method", "PUT");
@@ -108,7 +78,6 @@ function edit() {
     contentType: false,
     success: function (result) {
       getSuccessResponse(result, getArticles);
->>>>>>> develop
     },
     error: function (xhr) {
       getErrorResponse(xhr);
@@ -132,9 +101,6 @@ function getArticles() {
       { data: "code" },
       { data: "description" },
       { data: "id_category" },
-<<<<<<< HEAD
-      { data: "image" },
-=======
       {
         data: "image",
         render: function (data) {
@@ -145,25 +111,12 @@ function getArticles() {
           return result;
         }
       },
->>>>>>> develop
       { data: "stock" },
       { data: "active" },
       getActionsColumnDataTable(),
     ]
   });
 }
-<<<<<<< HEAD
-function updateCounter() {
-  const limit = 255;
-  $("#counter").text($("#description").val().length + "/" + limit);
-  if ($("#description").val().length >= limit) {
-    $("#counter").addClass("text-danger", "fw-bold");
-  } else {
-    $("#counter").removeClass("text-danger", "fw-bold");
-  }
-}
-=======
->>>>>>> develop
 
 function loadEditForm() {
   $('#tableArticles').on('click', '.edit-button', function () {
@@ -173,11 +126,6 @@ function loadEditForm() {
       row = row.prev(); // needed for responsive tables
     }
     let data = table.row(row).data();
-<<<<<<< HEAD
-    $("#edit-name").val(data.name);
-    $("#edit-idarticle").val(data.id_article);
-    $("#edit-description").text(data.description);
-=======
     $("#articleId").val(data.id_article);
     $("#edit-name").val(data.name);
     $("#edit-idarticle").val(data.id_article);
@@ -200,7 +148,6 @@ function loadEditForm() {
     else { // If the image does not exists will hide
       $("#edit-img").hide();
     }
->>>>>>> develop
     data.active === "0" ? $("#customSwitch1").prop("checked", false) : $("#customSwitch1").prop("checked", true);
   });
 }
@@ -215,26 +162,15 @@ function getCategories() {
 }
 
 
-<<<<<<< HEAD
-function loadCategories() {
-  if (document.getElementById("categorySelect").children.length <= 0) {
-    getCategories()
-      .done(function (result) {
-=======
 function loadCategories(selectHtml) {
   if (document.getElementById(selectHtml).children.length <= 0) {
     getCategories()
       .done(function (result) {
         let select = document.getElementById(selectHtml);
->>>>>>> develop
         for (let index = 0; index < result["data"].length; index++) {
           let option = document.createElement("option");
           option.text = result["data"][index].NAME;
           option.value = result["data"][index].ID_CATEGORY;
-<<<<<<< HEAD
-          let select = document.getElementById("categorySelect");
-=======
->>>>>>> develop
           select.appendChild(option);
         }
       })
@@ -245,16 +181,6 @@ function loadCategories(selectHtml) {
 
   }
 }
-<<<<<<< HEAD
-function generateCode() {
-  let code = document.getElementById("code");
-  code.value = Date.now() + Math.floor(Math.random());
-  validateCode(code.value);
-}
-
-function validateCode(code) {
-  $.ajax({  
-=======
 function generateCode(element, elementId) {
   let code = document.getElementById(elementId);
   code.value = Date.now() + Math.floor(Math.random());
@@ -268,20 +194,11 @@ function generateBarCode(element, code) {
 
 function validateCode(element, code, inputId) {
   $.ajax({
->>>>>>> develop
     url: `api/articles?code=${code}`,
     type: "GET",
     dataType: "json"
   }).done(function (result) {
     if (result.error === "OK") {
-<<<<<<< HEAD
-      $("#code").removeClass("is-invalid");
-      $("#code").addClass("is-valid");
-    }
-    else {
-      $("#code").removeClass("is-valid");
-      $("#code").addClass("is-invalid");
-=======
       $("#" + inputId).removeClass("is-invalid");
       $("#" + inputId).addClass("is-valid");
       generateBarCode("#" + element, code);
@@ -289,7 +206,6 @@ function validateCode(element, code, inputId) {
     else {
       $("#" + inputId).removeClass("is-valid");
       $("#" + inputId).addClass("is-invalid");
->>>>>>> develop
     }
   });
 }
@@ -302,47 +218,4 @@ function debounce(func, delay) {
   };
 }
 
-<<<<<<< HEAD
-function getSuccessResponse(response) {
-  if (response.status != "201") {
-    if (response.details) {
-      response.message += response.details.map((element) => {
-        return `<br> ${Object.keys(element)} => ${Object.values(element)}`;
-      });
-    }
-    toastr.warning(response.message);
-  } else {
-    toastr.success(response.message);
-    getArticles();
-  }
-}
-
-function getErrorResponse(xhr) {
-  let response = xhr.responseText;
-  let parsed = null;
-
-  try {
-    parsed = JSON.parse(response);
-  } catch (e) {
-    toastr.error("Unexpected server error");
-    console.error("Server response:", response);
-    return;
-  }
-
-  let message = parsed.message || "Request error";
-
-  if (parsed.details && Array.isArray(parsed.details)) {
-    const detailMessages = parsed.details
-      .map((item) => {
-        return Object.values(item).join(", ");
-      })
-      .join("<br>");
-    message += "<br>" + detailMessages;
-  }
-
-  toastr.error(message, `Error ${parsed.status} - ${parsed.error}`);
-}
-
-=======
->>>>>>> develop
 init();
