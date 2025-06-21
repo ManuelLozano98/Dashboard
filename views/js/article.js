@@ -7,6 +7,7 @@
 function init() {
   getArticles();
   document.getElementById("tab2-tab").addEventListener("click", function () { // When user clicks the section "Categories" on modal it loads the name of the categories 
+<<<<<<< HEAD
     loadCategories();
   });
   document.getElementById("code").addEventListener("input", debounce(function () {
@@ -18,6 +19,30 @@ function init() {
     generateCode();
   })
   loadEditForm();
+=======
+    loadCategories("categorySelect");
+  });
+  loadButtonsAction();
+  loadCounter();
+  validateCodeByUser("code", "barcode"); // Validate code when user tries to add an article
+  setupGenerateCode("generate-code", "barcode", "code");
+  loadEditForm();
+  setupGenerateCode("edit-generate-code", "edit-barcode", "edit-code");
+  validateCodeByUser("edit-code", "edit-barcode"); // Validate code when user tries to edit an article
+}
+
+function validateCodeByUser(codeId, barcodeId) {
+  document.getElementById(codeId).addEventListener("input", debounce(function () {
+    validateCode(barcodeId, this.value, codeId);
+  }, 500)
+  );
+}
+function setupGenerateCode(buttonId, barcodeId, codeId) {
+  document.getElementById(buttonId).addEventListener("click", function (event) {
+    event.preventDefault();
+    generateCode(barcodeId, codeId);
+  });
+>>>>>>> develop
 }
 
 function insert() {
@@ -29,7 +54,11 @@ function insert() {
     processData: false,
     contentType: false,
     success: function (response) {
+<<<<<<< HEAD
       getSuccessResponse(response);
+=======
+      getSuccessResponse(response, getArticles);
+>>>>>>> develop
     },
     error: function (xhr) {
       getErrorResponse(xhr);
@@ -47,11 +76,18 @@ function deleteItem(id) {
           toastr.success(result.message);
           getArticles();
         },
+<<<<<<< HEAD
+=======
+        error: function (xhr) {
+          getErrorResponse(xhr);
+        },
+>>>>>>> develop
       });
     }
   });
 }
 function edit() {
+<<<<<<< HEAD
   let form = new FormData($("#edit-form")[0]);
   $.ajax({
     url: "api/articles",
@@ -59,6 +95,20 @@ function edit() {
     data: form,
     success: function (result) {
       getSuccessResponse(result);
+=======
+  let form = new FormData($("#form-edit")[0]);
+  form.append("id_article", $("#articleId").val());
+  form.append("_method", "PUT");
+  form.append("edit-active", $("#customSwitch1").is(":checked") === true ? 1 : 0);
+  $.ajax({
+    url: "api/articles",
+    type: "POST",
+    data: form,
+    processData: false,
+    contentType: false,
+    success: function (result) {
+      getSuccessResponse(result, getArticles);
+>>>>>>> develop
     },
     error: function (xhr) {
       getErrorResponse(xhr);
@@ -82,13 +132,27 @@ function getArticles() {
       { data: "code" },
       { data: "description" },
       { data: "id_category" },
+<<<<<<< HEAD
       { data: "image" },
+=======
+      {
+        data: "image",
+        render: function (data) {
+          let result = "No image found";
+          if (data !== "") {
+            result = `<img alt="${data.substring(0, data.indexOf("."))}" src="articles_img/${data}" width="100px" height="100px"/>`;
+          }
+          return result;
+        }
+      },
+>>>>>>> develop
       { data: "stock" },
       { data: "active" },
       getActionsColumnDataTable(),
     ]
   });
 }
+<<<<<<< HEAD
 function updateCounter() {
   const limit = 255;
   $("#counter").text($("#description").val().length + "/" + limit);
@@ -98,6 +162,8 @@ function updateCounter() {
     $("#counter").removeClass("text-danger", "fw-bold");
   }
 }
+=======
+>>>>>>> develop
 
 function loadEditForm() {
   $('#tableArticles').on('click', '.edit-button', function () {
@@ -107,9 +173,34 @@ function loadEditForm() {
       row = row.prev(); // needed for responsive tables
     }
     let data = table.row(row).data();
+<<<<<<< HEAD
     $("#edit-name").val(data.name);
     $("#edit-idarticle").val(data.id_article);
     $("#edit-description").text(data.description);
+=======
+    $("#articleId").val(data.id_article);
+    $("#edit-name").val(data.name);
+    $("#edit-idarticle").val(data.id_article);
+    $("#edit-description").val(data.description);
+    updateCounter("edit-description", "edit-counter");
+    $("#edit-stock").val(data.stock);
+    $("#edit-code").val(data.code);
+    generateBarCode("#edit-barcode", data.code);
+    loadCategories("edit-categorySelect");
+    for (let element of document.getElementById("edit-categorySelect").children) { // Find the category to which the article belongs
+      element.removeAttribute("selected");
+      if (data.id_category === element.value) {
+        element.setAttribute("selected", true);
+      }
+    }
+    if (data.image !== "") { // If the image exists will show up
+      $("#edit-img").show();
+      $("#edit-img").attr("src", "articles_img/" + data.image);
+    }
+    else { // If the image does not exists will hide
+      $("#edit-img").hide();
+    }
+>>>>>>> develop
     data.active === "0" ? $("#customSwitch1").prop("checked", false) : $("#customSwitch1").prop("checked", true);
   });
 }
@@ -124,15 +215,26 @@ function getCategories() {
 }
 
 
+<<<<<<< HEAD
 function loadCategories() {
   if (document.getElementById("categorySelect").children.length <= 0) {
     getCategories()
       .done(function (result) {
+=======
+function loadCategories(selectHtml) {
+  if (document.getElementById(selectHtml).children.length <= 0) {
+    getCategories()
+      .done(function (result) {
+        let select = document.getElementById(selectHtml);
+>>>>>>> develop
         for (let index = 0; index < result["data"].length; index++) {
           let option = document.createElement("option");
           option.text = result["data"][index].NAME;
           option.value = result["data"][index].ID_CATEGORY;
+<<<<<<< HEAD
           let select = document.getElementById("categorySelect");
+=======
+>>>>>>> develop
           select.appendChild(option);
         }
       })
@@ -143,6 +245,7 @@ function loadCategories() {
 
   }
 }
+<<<<<<< HEAD
 function generateCode() {
   let code = document.getElementById("code");
   code.value = Date.now() + Math.floor(Math.random());
@@ -151,17 +254,42 @@ function generateCode() {
 
 function validateCode(code) {
   $.ajax({  
+=======
+function generateCode(element, elementId) {
+  let code = document.getElementById(elementId);
+  code.value = Date.now() + Math.floor(Math.random());
+  validateCode(element, code.value, elementId);
+}
+
+function generateBarCode(element, code) {
+  JsBarcode(element, code);
+  $(element).attr("width", "200px");
+}
+
+function validateCode(element, code, inputId) {
+  $.ajax({
+>>>>>>> develop
     url: `api/articles?code=${code}`,
     type: "GET",
     dataType: "json"
   }).done(function (result) {
     if (result.error === "OK") {
+<<<<<<< HEAD
       $("#code").removeClass("is-invalid");
       $("#code").addClass("is-valid");
     }
     else {
       $("#code").removeClass("is-valid");
       $("#code").addClass("is-invalid");
+=======
+      $("#" + inputId).removeClass("is-invalid");
+      $("#" + inputId).addClass("is-valid");
+      generateBarCode("#" + element, code);
+    }
+    else {
+      $("#" + inputId).removeClass("is-valid");
+      $("#" + inputId).addClass("is-invalid");
+>>>>>>> develop
     }
   });
 }
@@ -174,6 +302,7 @@ function debounce(func, delay) {
   };
 }
 
+<<<<<<< HEAD
 function getSuccessResponse(response) {
   if (response.status != "201") {
     if (response.details) {
@@ -214,4 +343,6 @@ function getErrorResponse(xhr) {
   toastr.error(message, `Error ${parsed.status} - ${parsed.error}`);
 }
 
+=======
+>>>>>>> develop
 init();

@@ -71,8 +71,12 @@ require_once 'header.php';
                                         <div class="form-group">
                                             <label for="description">Description</label>
                                             <textarea id="description" name="description" class="form-control" rows="4"
+<<<<<<< HEAD
                                                 maxlength="255" oninput="updateCounter()"
                                                 placeholder="Write here..."></textarea>
+=======
+                                                maxlength="255" placeholder="Write here..."></textarea>
+>>>>>>> develop
                                             <small class="form-text text-muted text-right">
                                                 <span id="counter">0/255</span>
                                             </small>
@@ -85,7 +89,11 @@ require_once 'header.php';
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label for="code">Product Code</label>
+<<<<<<< HEAD
                                                 <button type="button" id="generate-code"  style="margin-left: 5px"
+=======
+                                                <button type="button" id="generate-code" style="margin-left: 5px"
+>>>>>>> develop
                                                     class="btn btn-primary btn-sm">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                         fill="currentColor" class="bi bi-arrow-clockwise"
@@ -101,6 +109,10 @@ require_once 'header.php';
                                                 </button>
                                                 <input type="number" min="0" class="form-control" name="code" id="code"
                                                     required>
+<<<<<<< HEAD
+=======
+                                                <svg id="barcode"></svg>
+>>>>>>> develop
                                             </div>
                                         </div>
                                     </div>
@@ -127,7 +139,11 @@ require_once 'header.php';
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+<<<<<<< HEAD
                             <button type="button" class="btn btn-primary" onclick="insert()">Save changes</button>
+=======
+                            <button id="save" type="button" class="btn btn-primary">Save changes</button>
+>>>>>>> develop
                         </div>
 
                     </div>
@@ -146,6 +162,7 @@ require_once 'header.php';
                             </button>
                         </div>
                         <div class="modal-body">
+<<<<<<< HEAD
                             <form name="form-edit" id="form-edit" method="POST">
                                 <div class="row">
                                     <div class="col-sm-12">
@@ -174,6 +191,97 @@ require_once 'header.php';
                                 <div class="modal-footer justify-content-between">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                     <button type="button" class="btn btn-primary" onclick="edit()">Save changes</button>
+=======
+                            <!-- Tabs -->
+                            <ul class="nav nav-tabs" id="edit-formTabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="edit-tab1-tab" data-toggle="tab" href="#edit-tab1"
+                                        role="tab">Article data</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="edit-tab2-tab" data-toggle="tab" href="#edit-tab2"
+                                        role="tab">Categories</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="edit-tab3-tab" data-toggle="tab" href="#edit-tab3"
+                                        role="tab">Images</a>
+                                </li>
+                            </ul>
+                            <form name="form-edit" id="form-edit" method="POST" enctype="multipart/form-data">
+                                <div class="tab-content mt-3">
+                                    <input type="hidden" value="" id="articleId" />
+                                    <!-- Tab 1 -->
+                                    <div class="tab-pane fade show active" id="edit-tab1" role="tabpanel">
+                                        <div class="form-group">
+                                            <label for="edit-name">Name</label>
+                                            <input type="text" class="form-control" name="edit-name" id="edit-name"
+                                                placeholder="Write a name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="edit-description">Description</label>
+                                            <textarea id="edit-description" name="edit-description" class="form-control"
+                                                rows="4" maxlength="255" placeholder="Write here..."></textarea>
+                                            <small class="form-text text-muted text-right">
+                                                <span id="edit-counter">0/255</span>
+                                            </small>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="edit-stock">Stock</label>
+                                                <input type="number" min="0" class="form-control" name="edit-stock"
+                                                    id="edit-stock" required>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="edit-code">Product Code</label>
+                                                <button type="button" id="edit-generate-code" style="margin-left: 5px"
+                                                    class="btn btn-primary btn-sm">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        fill="currentColor" class="bi bi-arrow-clockwise"
+                                                        viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd"
+                                                            d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z">
+                                                        </path>
+                                                        <path
+                                                            d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466">
+                                                        </path>
+                                                    </svg>
+                                                    Generate code
+                                                </button>
+                                                <input type="number" min="0" class="form-control" name="edit-code"
+                                                    id="edit-code" required>
+                                                <svg id="edit-barcode"></svg>
+                                            </div>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                                                <label class="custom-control-label" for="customSwitch1">Active</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tab 2 -->
+                                    <div class="tab-pane fade" id="edit-tab2" role="tabpanel">
+                                        <div class="form-group">
+                                            <label for="edit-categorySelect">Select Category</label>
+                                            <select id="edit-categorySelect" name="edit-id_category"
+                                                class="form-control">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tab 3 -->
+                                    <div class="tab-pane fade" id="edit-tab3" role="tabpanel">
+                                        <div class="form-group">
+                                            <label for="edit-image">Upload or change image</label>
+                                            <input type="file" id="edit-image" name="edit-image"
+                                                class="form-control-file">
+                                            <img width="200px" height="200px" alt="edit-img" id="edit-img" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer justify-content-between">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button id="edit-save" type="button" class="btn btn-primary">Save changes</button>
+>>>>>>> develop
                                 </div>
 
                             </form>
@@ -268,6 +376,10 @@ require_once 'header.php';
     <script src="<?php echo $route ?>plugins/toastr/toastr.min.js"></script>
     <script src="<?php echo $route ?>plugins/sweetalert2/sweetalert2.min.js"></script>
     <script src="<?php echo $route ?>plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+<<<<<<< HEAD
+=======
+    <script src="<?php echo $route ?>plugins/jsbarcode/JsBarcode.all.min.js"></script>
+>>>>>>> develop
     <!-- AdminLTE App -->
     <script src="<?php echo $route ?>dist/js/adminlte.min.js"></script>
     <!-- Generic script for utilities -->
