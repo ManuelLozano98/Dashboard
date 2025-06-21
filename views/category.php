@@ -50,8 +50,7 @@ require_once 'header.php';
                                     </div>
                                     <div class="col-sm-12">
                                         <label for="description" class="form-label fw-semibold">Description</label>
-                                        <textarea id="description" class="form-control" rows="4" maxlength="255"
-                                            oninput="updateCounter()" placeholder="Write here..."></textarea>
+                                        <textarea id="description" class="form-control" rows="4" maxlength="255" placeholder="Write here..."></textarea>
                                         <div class="text-end text-muted mt-1">
                                             <span id="counter">0/255</span>
                                         </div>
@@ -61,7 +60,7 @@ require_once 'header.php';
                                 </div>
                                 <div class="modal-footer justify-content-between">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="insert()">Save
+                                    <button id="save" type="button" class="btn btn-primary">Save
                                         changes</button>
                                 </div>
 
@@ -97,10 +96,9 @@ require_once 'header.php';
                                     </div>
                                     <div class="col-sm-12">
                                         <label for="edit-description" class="form-label fw-semibold">Description</label>
-                                        <textarea id="edit-description" class="form-control" rows="4" maxlength="255"
-                                            oninput="updateCounter()" placeholder="Write here..." value=""></textarea>
+                                        <textarea id="edit-description" class="form-control" rows="4" maxlength="255" placeholder="Write here..." value=""></textarea>
                                         <div class="text-end text-muted mt-1">
-                                            <span id="counter">0/255</span>
+                                            <span id="edit-counter">0/255</span>
                                         </div>
                                     </div>
                                     <div class="custom-control custom-switch">
@@ -112,7 +110,7 @@ require_once 'header.php';
                                 </div>
                                 <div class="modal-footer justify-content-between">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="edit()">Save changes</button>
+                                    <button id="edit-save" type="button" class="btn btn-primary">Save changes</button>
                                 </div>
 
                             </form>

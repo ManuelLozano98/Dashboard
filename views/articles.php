@@ -71,8 +71,7 @@ require_once 'header.php';
                                         <div class="form-group">
                                             <label for="description">Description</label>
                                             <textarea id="description" name="description" class="form-control" rows="4"
-                                                maxlength="255" oninput="updateCounter()"
-                                                placeholder="Write here..."></textarea>
+                                                maxlength="255" placeholder="Write here..."></textarea>
                                             <small class="form-text text-muted text-right">
                                                 <span id="counter">0/255</span>
                                             </small>
@@ -128,7 +127,7 @@ require_once 'header.php';
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" onclick="insert()">Save changes</button>
+                            <button id="save" type="button" class="btn btn-primary">Save changes</button>
                         </div>
 
                     </div>
@@ -162,8 +161,9 @@ require_once 'header.php';
                                         role="tab">Images</a>
                                 </li>
                             </ul>
-                            <form name="form-edit" id="form-edit" method="POST">
+                            <form name="form-edit" id="form-edit" method="POST" enctype="multipart/form-data">
                                 <div class="tab-content mt-3">
+                                    <input type="hidden" value="" id="articleId" />
                                     <!-- Tab 1 -->
                                     <div class="tab-pane fade show active" id="edit-tab1" role="tabpanel">
                                         <div class="form-group">
@@ -174,8 +174,7 @@ require_once 'header.php';
                                         <div class="form-group">
                                             <label for="edit-description">Description</label>
                                             <textarea id="edit-description" name="edit-description" class="form-control"
-                                                rows="4" maxlength="255" oninput="updateCounter()"
-                                                placeholder="Write here..."></textarea>
+                                                rows="4" maxlength="255" placeholder="Write here..."></textarea>
                                             <small class="form-text text-muted text-right">
                                                 <span id="edit-counter">0/255</span>
                                             </small>
@@ -235,7 +234,7 @@ require_once 'header.php';
                                 </div>
                                 <div class="modal-footer justify-content-between">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="edit()">Save changes</button>
+                                    <button id="edit-save" type="button" class="btn btn-primary">Save changes</button>
                                 </div>
 
                             </form>
