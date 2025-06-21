@@ -69,30 +69,40 @@ class Article
     }
     private function edit($data)
     {
-        // $dbArticle = $this->findById($id);
-        // if (!$dbArticle) {
-        //     $this->response->setError("Article not found");
-        //     $this->response->setStatus("404");
-        //     $this->response->setMessage("This article cannot be updated because it does not exist");
-        //     return $this->response->buildResponse();
-        // }
-        // $nameTaken = $this->findByName($name);
-        // if ($nameTaken) {
-        //     if ($nameTaken[0]["name"] === $name && $dbArticle["id_article"] !== $nameTaken[0]["id_article"]) { // Checks if the name of the article is already taken
-        //         $this->response->setError("Conflict");
-        //         $this->response->setMessage("This article cannot be updated because it already exists");
-        //         $this->response->setStatus("409");
-        //         return $this->response->buildResponse();
-        //     }
-        // }
-
-        // $sql = "UPDATE ARTICLES SET NAME=?, description=?, active=? WHERE ID_CATEGORY=?";
-        // preparedQuerySQL($sql, "ssii", $name, $description, $active, $id);
-        // $this->response->setError(null);
-        // $this->response->setStatus("201");
-        // $this->response->setMessage("Article updated successfully");
-        // $this->response->setData($this->findById($id));
-        // return $this->response->buildResponse();
+        $dbArticle = $this->findById($data["id_article"]);
+        if (!$dbArticle) {
+            $this->response->getUpdatedNotFoundMessage("Article");
+            return $this->response->buildResponse();
+        }
+        $nameTaken = $this->findByName($data["edit-name"]);
+        $codeTaken = $this->findByCode($data["edit-code"]);
+        if ($nameTaken) {
+            if ($nameTaken[0]["name"] === $data["edit-name"] && $dbArticle["id_article"] !== $nameTaken[0]["id_article"]) {
+                $this->response->setError("Conflict");
+                $this->response->setMessage("This article cannot be updated because it already exists");
+                $this->response->setStatus("409");
+                return $this->response->buildResponse();
+            }
+        }
+        if ($codeTaken) {
+            if (($codeTaken[0]["code"] === $data["edit-code"] && $dbArticle["id_article"] !== $codeTaken[0]["id_article"])) {
+                $this->response->setError("Conflict");
+                $this->response->setMessage("This article cannot be updated because it already exists");
+                $this->response->setStatus("409");
+                return $this->response->buildResponse();
+            }
+        }
+        $img = $dbArticle["image"];
+        if (isset($_FILES["edit-image"]) && $_FILES["edit-image"]['error'] === UPLOAD_ERR_OK) {
+            $img = $this->saveImage($_FILES["edit-image"]);
+        }
+        $sql = "UPDATE ARTICLES SET NAME=?, CODE=?, IMAGE=?,  DESCRIPTION=?, STOCK=?, ACTIVE=?, ID_CATEGORY=? WHERE ID_ARTICLE=?";
+        preparedQuerySQL($sql, "sissiiii", $data["edit-name"], $data["edit-code"], $img, $data["edit-description"], $data["edit-stock"], $data["edit-active"], $data["edit-id_category"], $dbArticle["id_article"]);
+        $this->response->setError(null);
+        $this->response->setStatus("201");
+        $this->response->setMessage("Article updated successfully");
+        $this->response->setData($this->findById($dbArticle["id_article"]));
+        return $this->response->buildResponse();
     }
     public function existsCode($code)
     {
@@ -188,7 +198,7 @@ class Article
             }
             return $this->response->buildResponse();
         } else {
-            $requiredFields = ["id_article", "id_category", "code", "name"];
+            $requiredFields = ["id_article", "edit-id_category", "edit-code", "edit-name"];
             $validatedFields = 0;
             foreach ($requiredFields as $field) {
                 if (array_key_exists($field, $fields) && $fields[$field] !== "") {
