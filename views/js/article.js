@@ -9,6 +9,8 @@ function init() {
   document.getElementById("tab2-tab").addEventListener("click", function () { // When user clicks the section "Categories" on modal it loads the name of the categories 
     loadCategories("categorySelect");
   });
+  loadButtonsAction();
+  loadCounter();
   validateCodeByUser("code", "barcode"); // Validate code when user tries to add an article
   setupGenerateCode("generate-code", "barcode", "code");
   loadEditForm();
@@ -18,7 +20,7 @@ function init() {
 
 function validateCodeByUser(codeId, barcodeId) {
   document.getElementById(codeId).addEventListener("input", debounce(function () {
-    validateCode(barcodeId, this.value);
+    validateCode(barcodeId, this.value, codeId);
   }, 500)
   );
 }
@@ -38,7 +40,7 @@ function insert() {
     processData: false,
     contentType: false,
     success: function (response) {
-      getSuccessResponse(response);
+      getSuccessResponse(response, getArticles);
     },
     error: function (xhr) {
       getErrorResponse(xhr);
@@ -56,18 +58,26 @@ function deleteItem(id) {
           toastr.success(result.message);
           getArticles();
         },
+        error: function (xhr) {
+          getErrorResponse(xhr);
+        },
       });
     }
   });
 }
 function edit() {
-  let form = new FormData($("#edit-form")[0]);
+  let form = new FormData($("#form-edit")[0]);
+  form.append("id_article", $("#articleId").val());
+  form.append("_method", "PUT");
+  form.append("edit-active", $("#customSwitch1").is(":checked") === true ? 1 : 0);
   $.ajax({
     url: "api/articles",
-    type: "PUT",
+    type: "POST",
     data: form,
+    processData: false,
+    contentType: false,
     success: function (result) {
-      getSuccessResponse(result);
+      getSuccessResponse(result, getArticles);
     },
     error: function (xhr) {
       getErrorResponse(xhr);
@@ -107,15 +117,6 @@ function getArticles() {
     ]
   });
 }
-function updateCounter() {
-  const limit = 255;
-  $("#counter").text($("#description").val().length + "/" + limit);
-  if ($("#description").val().length >= limit) {
-    $("#counter").addClass("text-danger", "fw-bold");
-  } else {
-    $("#counter").removeClass("text-danger", "fw-bold");
-  }
-}
 
 function loadEditForm() {
   $('#tableArticles').on('click', '.edit-button', function () {
@@ -125,9 +126,11 @@ function loadEditForm() {
       row = row.prev(); // needed for responsive tables
     }
     let data = table.row(row).data();
+    $("#articleId").val(data.id_article);
     $("#edit-name").val(data.name);
     $("#edit-idarticle").val(data.id_article);
-    $("#edit-description").text(data.description);
+    $("#edit-description").val(data.description);
+    updateCounter("edit-description", "edit-counter");
     $("#edit-stock").val(data.stock);
     $("#edit-code").val(data.code);
     generateBarCode("#edit-barcode", data.code);
@@ -145,7 +148,6 @@ function loadEditForm() {
     else { // If the image does not exists will hide
       $("#edit-img").hide();
     }
-
     data.active === "0" ? $("#customSwitch1").prop("checked", false) : $("#customSwitch1").prop("checked", true);
   });
 }
@@ -164,11 +166,11 @@ function loadCategories(selectHtml) {
   if (document.getElementById(selectHtml).children.length <= 0) {
     getCategories()
       .done(function (result) {
+        let select = document.getElementById(selectHtml);
         for (let index = 0; index < result["data"].length; index++) {
           let option = document.createElement("option");
           option.text = result["data"][index].NAME;
           option.value = result["data"][index].ID_CATEGORY;
-          let select = document.getElementById(selectHtml);
           select.appendChild(option);
         }
       })
@@ -182,7 +184,7 @@ function loadCategories(selectHtml) {
 function generateCode(element, elementId) {
   let code = document.getElementById(elementId);
   code.value = Date.now() + Math.floor(Math.random());
-  validateCode(element, code.value);
+  validateCode(element, code.value, elementId);
 }
 
 function generateBarCode(element, code) {
@@ -190,20 +192,20 @@ function generateBarCode(element, code) {
   $(element).attr("width", "200px");
 }
 
-function validateCode(element, code) {
+function validateCode(element, code, inputId) {
   $.ajax({
     url: `api/articles?code=${code}`,
     type: "GET",
     dataType: "json"
   }).done(function (result) {
     if (result.error === "OK") {
-      $("#code").removeClass("is-invalid");
-      $("#code").addClass("is-valid");
+      $("#" + inputId).removeClass("is-invalid");
+      $("#" + inputId).addClass("is-valid");
       generateBarCode("#" + element, code);
     }
     else {
-      $("#code").removeClass("is-valid");
-      $("#code").addClass("is-invalid");
+      $("#" + inputId).removeClass("is-valid");
+      $("#" + inputId).addClass("is-invalid");
     }
   });
 }
@@ -214,46 +216,6 @@ function debounce(func, delay) {
     clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(this, arguments), delay);
   };
-}
-
-function getSuccessResponse(response) {
-  if (response.status != "201") {
-    if (response.details) {
-      response.message += response.details.map((element) => {
-        return `<br> ${Object.keys(element)} => ${Object.values(element)}`;
-      });
-    }
-    toastr.warning(response.message);
-  } else {
-    toastr.success(response.message);
-    getArticles();
-  }
-}
-
-function getErrorResponse(xhr) {
-  let response = xhr.responseText;
-  let parsed = null;
-
-  try {
-    parsed = JSON.parse(response);
-  } catch (e) {
-    toastr.error("Unexpected server error");
-    console.error("Server response:", response);
-    return;
-  }
-
-  let message = parsed.message || "Request error";
-
-  if (parsed.details && Array.isArray(parsed.details)) {
-    const detailMessages = parsed.details
-      .map((item) => {
-        return Object.values(item).join(", ");
-      })
-      .join("<br>");
-    message += "<br>" + detailMessages;
-  }
-
-  toastr.error(message, `Error ${parsed.status} - ${parsed.error}`);
 }
 
 init();
