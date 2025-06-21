@@ -6,6 +6,8 @@
 
 function init() {
   getCategories();
+  loadCounter();
+  loadButtonsAction();
   loadEditForm();
 }
 
@@ -20,7 +22,7 @@ function insert() {
     dataType: "json",
     data: JSON.stringify(category),
     success: function (response) {
-      getSuccessResponse(response);
+      getSuccessResponse(response, getCategories);
     },
     error: function (xhr) {
       getErrorResponse(xhr);
@@ -37,6 +39,9 @@ function deleteItem(id) {
         success: function (result) {
           toastr.success(result.message);
           getCategories();
+        },
+        error: function (xhr) {
+          getErrorResponse(xhr);
         },
       });
     }
@@ -55,7 +60,7 @@ function edit() {
     dataType: "json",
     data: JSON.stringify(category),
     success: function (result) {
-      getSuccessResponse(result);
+      getSuccessResponse(result, getCategories);
     },
     error: function (xhr) {
       getErrorResponse(xhr);
@@ -82,15 +87,6 @@ function getCategories() {
     ]
   });
 }
-function updateCounter() {
-  const limit = 255;
-  $("#counter").text($("#description").val().length + "/" + limit);
-  if ($("#description").val().length >= limit) {
-    $("#counter").addClass("text-danger", "fw-bold");
-  } else {
-    $("#counter").removeClass("text-danger", "fw-bold");
-  }
-}
 
 function loadEditForm() {
   $('#tableCategories').on('click', '.edit-button', function () {
@@ -102,49 +98,10 @@ function loadEditForm() {
     let data = table.row(row).data();
     $("#edit-name").val(data.name);
     $("#edit-idcategory").val(data.id_category);
-    $("#edit-description").text(data.description);
+    $("#edit-description").val(data.description);
+    updateCounter("edit-description", "edit-counter");
     data.active === "0" ? $("#customSwitch1").prop("checked", false) : $("#customSwitch1").prop("checked", true);
   });
-}
-
-function getSuccessResponse(response) {
-  if (response.status != "201") {
-    if (response.details) {
-      response.message += response.details.map((element) => {
-        return `<br> ${Object.keys(element)} => ${Object.values(element)}`;
-      });
-    }
-    toastr.warning(response.message);
-  } else {
-    toastr.success(response.message);
-    getCategories();
-  }
-}
-
-function getErrorResponse(xhr) {
-  let response = xhr.responseText;
-  let parsed = null;
-
-  try {
-    parsed = JSON.parse(response);
-  } catch (e) {
-    toastr.error("Unexpected server error");
-    console.error("Server response:", response);
-    return;
-  }
-
-  let message = parsed.message || "Request error";
-
-  if (parsed.details && Array.isArray(parsed.details)) {
-    const detailMessages = parsed.details
-      .map((item) => {
-        return Object.values(item).join(", ");
-      })
-      .join("<br>");
-    message += "<br>" + detailMessages;
-  }
-
-  toastr.error(message, `Error ${parsed.status} - ${parsed.error}`);
 }
 
 init();
