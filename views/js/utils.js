@@ -34,7 +34,7 @@ function getActionsColumnDataTable() {
             let id = Object.values(data)[0];
             return `
             <button id="btn-edit${id}" class="btn btn-success btn-sm rounded-0 edit-button" type="button" data-toggle="modal" data-target="#modal-edit-default" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button>
-            <button class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Delete" onclick="deleteItem(${id})"><i class="fa fa-trash"></i></button>
+            <button id="btn-delete_${id}" class="btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>
           `;
         },
     }
@@ -57,6 +57,86 @@ function closeModalDialog() {
         }
     });
 }
+
+function updateCounter(elementId, counterId) {
+    const limit = 255;
+    $("#" + counterId).text($("#" + elementId).val().length + "/" + limit);
+    if ($("#" + elementId).val().length >= limit) {
+        $("#" + counterId).addClass("text-danger", "fw-bold");
+    } else {
+        $("#" + counterId).removeClass("text-danger", "fw-bold");
+    }
+}
+
+function getErrorResponse(xhr) {
+    let response = xhr.responseText;
+    let parsed = null;
+
+    try {
+        parsed = JSON.parse(response);
+    } catch (e) {
+        toastr.error("Unexpected server error");
+        console.error("Server response:", response);
+        return;
+    }
+
+    let message = parsed.message || "Request error";
+
+    if (parsed.details && Array.isArray(parsed.details)) {
+        const detailMessages = parsed.details
+            .map((item) => {
+                return Object.values(item).join(", ");
+            })
+            .join("<br>");
+        message += "<br>" + detailMessages;
+    }
+
+    toastr.error(message, `Error ${parsed.status} - ${parsed.error}`);
+}
+
+function loadButtonsAction() {
+    document.addEventListener("click", function (e) {
+        let deleteBtn = e.target.closest('[id^="btn-delete_"]');
+        let editBtn = e.target.closest('#edit-save');
+        let addBtn = e.target.closest('#save');
+
+        if (deleteBtn) {
+            let id = deleteBtn.id.split("_")[1];
+            deleteItem(id);
+        }
+
+        if (editBtn) {
+            edit();
+        }
+        if (addBtn) {
+            insert();
+        }
+    });
+}
+
+function loadCounter() {
+    document.getElementById("description").addEventListener("input", function (event) {
+        updateCounter(this.id, "counter");
+    });
+    document.getElementById("edit-description").addEventListener("input", function (event) {
+        updateCounter(this.id, "edit-counter");
+    });
+}
+
+function getSuccessResponse(response,fn) {
+    if (response.status != "201") {
+        if (response.details) {
+            response.message += response.details.map((element) => {
+                return `<br> ${Object.keys(element)} => ${Object.values(element)}`;
+            });
+        }
+        toastr.warning(response.message);
+    } else {
+        toastr.success(response.message);
+        fn();
+    }
+}
+
 
 closeModalDialog();
 
