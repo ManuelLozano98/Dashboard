@@ -13,7 +13,11 @@ switch ($method) {
         }
         break;
     case 'POST':
-    case 'PUT':
+        if (!empty($queryParams["_method"])) {
+            if ($queryParams["_method"] === "PUT") {
+                $method = "PUT";
+            }
+        }
         save($method, $queryParams);
         break;
     case 'DELETE':
