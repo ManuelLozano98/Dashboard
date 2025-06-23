@@ -111,6 +111,7 @@ require_once 'header.php';
                                             <label for="categorySelect">Select Category</label>
                                             <select id="categorySelect" name="id_category" class="form-control">
                                             </select>
+                                            <a id="categoriesModal" style="display:none" href="categories?openModal=true" target="_blank">Don't have any categories? Add one</a>
                                         </div>
                                     </div>
 

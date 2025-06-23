@@ -173,6 +173,9 @@ function loadCategories(selectHtml) {
           option.value = result["data"][index].ID_CATEGORY;
           select.appendChild(option);
         }
+        if(result["data"].length<=0){
+          $("#categoriesModal").show();
+        }
       })
       .fail(function (result) {
         getErrorResponse(result);
