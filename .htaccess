@@ -8,6 +8,7 @@ RewriteRule ^$ views/index.php [L]
 # VIEWS
 RewriteRule ^categories$ views/category.php [L]
 RewriteRule ^articles$ views/articles.php [L]
+RewriteRule ^users$ views/users.php [L]
 # API
 RewriteRule ^api/([a-zA-Z0-9_-]+)$ api/$1.php [L]
 
