@@ -123,7 +123,7 @@ function loadCounter() {
     });
 }
 
-function getSuccessResponse(response,fn) {
+function getSuccessResponse(response, fn) {
     if (response.status != "201") {
         if (response.details) {
             response.message += response.details.map((element) => {
@@ -135,6 +135,16 @@ function getSuccessResponse(response,fn) {
         toastr.success(response.message);
         fn();
     }
+}
+
+function loginInvalid() {
+    return Swal.fire({
+        title: "Invalid login",
+        text: "Incorrect username or password",
+        icon: "error",
+        confirmButtonColor: "#3085d6",
+        showCloseButton: true,
+    });
 }
 
 
