@@ -129,6 +129,17 @@ class Response
         $this->setError("Bad Request");
         $this->setMessage("Required fields are missing");
     }
+    public function getInvalidLoginMessage()
+    {
+        $this->setStatus("200");
+        $this->setError("Invalid credentials");
+    }
+    public function getValidLoginMessage()
+    {
+        $this->setStatus("200");
+        $this->setError(null);
+        $this->setMessage("Successful login");
+    }
 
 
 
