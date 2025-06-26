@@ -4,6 +4,7 @@ Options -Indexes
 
 # HOME
 RewriteRule ^$ views/index.php [L]
+RewriteRule ^home$ views/index.php [L]
 
 # VIEWS
 RewriteRule ^categories$ views/category.php [L]
