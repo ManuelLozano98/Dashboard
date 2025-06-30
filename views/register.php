@@ -114,6 +114,8 @@
     <!-- AdminLTE App -->
     <script src="<?php echo $route ?>plugins/jquery-validation/jquery.validate.min.js"></script>
     <script src="<?php echo $route ?>plugins/jquery-validation/additional-methods.min.js"></script>
+    <script src="<?php echo $route ?>plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script src="<?php echo $route ?>plugins/toastr/toastr.min.js"></script>
     <script src="<?php echo $route ?>dist/js/adminlte.min.js"></script>
     <script src="views/js/utils.js"></script>
     <script src="views/js/register.js"></script>
