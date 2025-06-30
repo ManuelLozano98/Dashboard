@@ -26,6 +26,22 @@ function preparedQuerySQL($sql,$types,...$params){
     $q = $stmt->execute();
     return $q;
 }
+function preparedQuerySQLObject($sql, $types, $object, $propertyNames) {
+    global $db;
+    $params = [];
+    foreach ($propertyNames as $prop) {
+        $method = 'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $prop)));
+        if (is_object($object->$method())) {
+            $params[] = $object->getId();
+        } else {
+            $params[] = $object->$method();
+        }
+    }
+    $stmt = $db->prepare($sql);
+    $stmt->bind_param($types, ...$params);
+    $q = $stmt->execute();
+    return $q;
+}
 
 function getDataPreparedQuerySQL($sql,$types,...$params){
     global $db;
