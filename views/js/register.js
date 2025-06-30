@@ -100,7 +100,28 @@ function verifyForm() {
             $(element).removeClass('is-invalid');
         },
         submitHandler: function (form) {
-            console.log("form is ok");
+            let formData = new FormData(form);
+            $.ajax({
+                url: "api/users",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (xhr) {
+                    if (xhr.status === "201") {
+                        getSuccessResponse(xhr, function () {
+                             window.open("confirm-email", '_blank');
+                        });
+                    }
+                    else {
+                        getSuccessResponse(xhr);
+                    }
+                },
+                error: function (xhr) {
+                    getErrorResponse(xhr);
+                }
+            });
+
         }
     });
 }
