@@ -88,7 +88,7 @@ class User
         $sql = "INSERT INTO USERS VALUES (?,?,?,?,?,?,?,?,?,?,?)";
         preparedQuerySQLObject($sql, "isssssssssi", $newUser, ["id", "name", "email", "password", "username", "phone", "image", "address", "document", "document_type", "active"]);
         $this->response->getCreatedSuccesfullyMessage("User");
-        $this->response->setData($this->getUserCreatedInfo());
+        $this->response->setData($newUser->getUserCreatedInfo());
         return $this->response->buildResponse();
     }
     private function saveImage($img)
