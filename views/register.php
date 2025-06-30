@@ -15,6 +15,13 @@
     <link rel="stylesheet" href="<?php echo $route ?>plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="<?php echo $route ?>dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="<?php echo $route; ?>plugins/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="<?php echo $route; ?>plugins/toastr/toastr.min.css">
+    <style>
+        .fa-eye-slash, .fa-eye{
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body class="hold-transition register-page">
