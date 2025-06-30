@@ -7,8 +7,12 @@ switch ($method) {
     case 'GET':
         break;
     case 'POST':
-        if ($_GET["q"] === "login") {
-            login($queryParams);
+        if (empty($_GET)) {
+            save($method, $queryParams);
+        } else {
+            if (($_GET["q"] === "login")) {
+                login($queryParams);
+            }
         }
         break;
     case "PUT":
