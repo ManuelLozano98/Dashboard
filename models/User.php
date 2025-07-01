@@ -13,6 +13,9 @@
  */
 require_once '../configurations/database.php';
 require_once 'Response.php';
+require_once 'Mail.php';
+
+use PHPMailer\PHPMailer\Exception;
 
 class User
 {
@@ -26,6 +29,8 @@ class User
     private $address;
     private $document;
     private $document_type;
+    private $token;
+    private $tokenExpiredAt;
 
     private $active;
 
@@ -43,7 +48,15 @@ class User
         $this->image = $data['image'] ?? "";
         $this->document = $data['document'] ?? "";
         $this->document_type = $data['document_type'] ?? "";
-        $this->active = $data['active'] ?? 1;
+        $this->active = $data['active'] ?? 0;
+        $this->token = "";
+        $this->tokenExpiredAt = "";
+    }
+
+    private function generateToken(User $user)
+    {
+        $user->setToken(bin2hex(random_bytes(32)));
+        $user->setTokenExpiredAt((new DateTime('+1 day'))->format('Y-m-d H:i:s'));
     }
 
     public function checkLogin($params)
@@ -56,7 +69,7 @@ class User
             ? $this->findByEmail($login)
             : $this->findByUsername($login);
 
-        if ($data && $this->checkPassword($password, $data["password"])) {
+        if ($data && $data["active"] === 1 && $this->checkPassword($password, $data["password"])) {
             $response->getValidLoginMessage();
         } else {
             $response->getInvalidLoginMessage();
@@ -85,11 +98,42 @@ class User
         $hash = password_hash($user["password"], PASSWORD_BCRYPT);
         $newUser = new User($user);
         $newUser->setPassword($hash);
-        $sql = "INSERT INTO USERS VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-        preparedQuerySQLObject($sql, "isssssssssi", $newUser, ["id", "name", "email", "password", "username", "phone", "image", "address", "document", "document_type", "active"]);
+        $this->generateToken($newUser);
+        $sql = "INSERT INTO USERS VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        preparedQuerySQLObject($sql, "isssssssssiss", $newUser, ["id", "name", "email", "password", "username", "phone", "image", "address", "document", "document_type", "active", "token", "tokenExpiredAt"]);
+        if ($newUser->sendEmail($newUser->getEmail(), $newUser->getUsername(), $newUser->getToken())) {
+            $this->response->setDetails(["email" => "Email sent successfully"]);
+        } else {
+            $this->response->setDetails(["email" => "Email could not be sent. Mailer Error"]);
+        }
         $this->response->getCreatedSuccesfullyMessage("User");
         $this->response->setData($newUser->getUserCreatedInfo());
         return $this->response->buildResponse();
+    }
+
+    private function sendEmail($email, $username, $token)
+    {
+        $verifyUrl = "http://localhost/AdminDashboard/api/users?token=$token";
+        try {
+            $mail = Mail::createMailer();
+            $mail->addAddress($email, $username);
+            $mail->Subject = 'Verify Your Email Address';
+            $mail->Body = '
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
+                <h2>Hello ' . htmlspecialchars($username) . ',</h2>
+                <p>Thank you for registering. Please click the link below to verify your email address:</p>
+                <p><a href="' . $verifyUrl . '" style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;">Verify Email</a></p>
+                <p>If the button doesn\'t work, copy and paste this URL into your browser:</p>
+                <p>' . $verifyUrl . '</p>
+                <p>If you didn\'t register on our platform, please ignore this email.</p>
+            </div>';
+            $mail->AltBody = "Hello $username,\nPlease verify your email: $verifyUrl" . " If you didn't register on our platform, please ignore this email.";
+            return $mail->send();
+        } catch (Exception $e) {
+            echo "Mailer Error: " . $mail->ErrorInfo;
+            echo "<pre>" . $e->getMessage() . "</pre>";
+        }
+
     }
     private function saveImage($img)
     {
@@ -161,6 +205,29 @@ class User
         $sql = "SELECT * FROM USERS WHERE DOCUMENT=?";
         $data = getDataPreparedQuerySQL($sql, "s", $document);
         return $data ? $data[0] : null;
+    }
+    public function findByToken($token)
+    {
+        $sql = "SELECT * FROM USERS WHERE VERIFICATION_TOKEN=?";
+        $data = getDataPreparedQuerySQL($sql, "s", $token);
+        return $data ? $data[0] : null;
+    }
+    public function verifyToken($token)
+    {
+        $response = new Response();
+        $response->setMessage("The token has already expired");
+        $response->setStatus(409);
+        $user = $this->findByToken($token);
+        $date = (new DateTime('now'))->format('Y-m-d H:i:s');
+        if ($user && !$user["active"] && $user["token_expires_at"] > $date) {
+            $sql = "UPDATE USERS SET ACTIVE = 1, VERIFICATION_TOKEN = NULL WHERE ID_USER = ?";
+            if (preparedQuerySQL($sql, "i", $user["id_user"])) {
+                $response->setMessage("The user has been successfully verified");
+                $response->setStatus(201);
+
+            }
+        }
+        return $response;
     }
 
     public function getUserCreatedInfo()
@@ -448,6 +515,46 @@ class User
     public function setUsername($username)
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of token
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Set the value of token
+     *
+     * @return  self
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of tokenExpiredAt
+     */
+    public function getTokenExpiredAt()
+    {
+        return $this->tokenExpiredAt;
+    }
+
+    /**
+     * Set the value of tokenExpiredAt
+     *
+     * @return  self
+     */
+    public function setTokenExpiredAt($tokenExpiredAt)
+    {
+        $this->tokenExpiredAt = $tokenExpiredAt;
 
         return $this;
     }
