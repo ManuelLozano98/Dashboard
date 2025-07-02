@@ -15,6 +15,7 @@ RewriteRule ^forgot-password$ views/forgot-password.php [L]
 RewriteRule ^recover-password$ views/recover-password.php [L]
 RewriteRule ^register$ views/register.php [L]
 RewriteRule ^confirm-email$ views/confirm-email.php [L]
+RewriteRule ^email-confirmed$ views/email-confirmed.php [L]
 
 # API
 RewriteRule ^api/([a-zA-Z0-9_-]+)$ api/$1.php [L]
