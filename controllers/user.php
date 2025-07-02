@@ -30,6 +30,17 @@ function login($query)
 
 }
 
+function confirmRegistration($query){
+    $user = new User();
+    $response = $user->verifyToken($query);
+    if($response->getStatus() === 201){
+        header("Location: ../email-confirmed");
+    }
+    else{
+        header("Location: ../email-confirmed?user=not-registered");
+    }
+}
+
 function save($method, $request)
 {
     header('Content-Type: application/json');

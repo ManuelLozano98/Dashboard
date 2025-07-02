@@ -5,6 +5,12 @@ $body = json_decode(file_get_contents('php://input'), true);
 $queryParams = $_POST;
 switch ($method) {
     case 'GET':
+        if (empty($_GET)) {
+        } else {
+            if ($_GET["token"]) {
+                confirmRegistration($_GET["token"]);
+            }
+        }
         break;
     case 'POST':
         if (empty($_GET)) {
