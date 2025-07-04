@@ -22,3 +22,6 @@ RewriteRule ^api/([a-zA-Z0-9_-]+)$ api/$1.php [L]
 
 # ERROR 404
 ErrorDocument 404 /AdminDashboard/views/404.php
+
+#Log out
+RewriteRule ^logout$ views/logout.php [L]
