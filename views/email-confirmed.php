@@ -1,22 +1,25 @@
+<?php 
+  require_once '../configurations/config.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AdminLTE 3 | Confirm registration</title>
+    <title><?php echo SITE ?> | Confirm registration</title>
 
-    <?php $route = "public/"; ?>
+    
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="<?php echo $route ?>plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo PATHP?>plugins/fontawesome-free/css/all.min.css">
     <!-- icheck bootstrap -->
-    <link rel="stylesheet" href="<?php echo $route ?>plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo PATHP?>plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="<?php echo $route ?>dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="<?php echo PATHP?>dist/css/adminlte.min.css">
     <style>
         .login-box {
             width: 425px;
@@ -62,7 +65,7 @@
         <!-- /.login-logo -->
         <div class="card">
             <div class="login-logo">
-                <a href="login"><b>Admin</b>LTE</a>
+                <a href="login"><b>Admin</b>Dashboard</a>
             </div>
             <div class="card-body login-card-body">
                 <div class="container" id="verified">
@@ -87,11 +90,11 @@
     </div>
 
     <!-- jQuery -->
-    <script src="<?php echo $route ?>plugins/jquery/jquery.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/jquery/jquery.min.js"></script>
     <!-- Bootstrap 4 -->
-    <script src="<?php echo $route ?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
-    <script src="<?php echo $route ?>dist/js/adminlte.min.js"></script>
+    <script src="<?php echo PATHP?>dist/js/adminlte.min.js"></script>
     <script>
         if (window.location.search && window.location.search === "?user=not-registered") { // If the token is not valid show error
             document.getElementById("verified").style.display = "none";

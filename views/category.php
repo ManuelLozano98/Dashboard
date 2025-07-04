@@ -20,7 +20,7 @@ require_once 'header.php';
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="./">Home</a></li>
+                                <li class="breadcrumb-item"><a href="home">Home</a></li>
                                 <li class="breadcrumb-item active">Categories</li>
                             </ol>
                         </div>
@@ -182,27 +182,27 @@ require_once 'header.php';
 
     </div>
 
-    <script src="<?php echo $route ?>plugins/jquery/jquery.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/jquery/jquery.min.js"></script>
     <!-- Bootstrap 4 -->
-    <script src="<?php echo $route ?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- DataTables  & Plugins -->
-    <script src="<?php echo $route ?>plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="<?php echo $route ?>plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="<?php echo $route ?>plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="<?php echo $route ?>plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-    <script src="<?php echo $route ?>plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="<?php echo $route ?>plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="<?php echo $route ?>plugins/jszip/jszip.min.js"></script>
-    <script src="<?php echo $route ?>plugins/pdfmake/pdfmake.min.js"></script>
-    <script src="<?php echo $route ?>plugins/pdfmake/vfs_fonts.js"></script>
-    <script src="<?php echo $route ?>plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="<?php echo $route ?>plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="<?php echo $route ?>plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-    <script src="<?php echo $route ?>plugins/toastr/toastr.min.js"></script>
-    <script src="<?php echo $route ?>plugins/sweetalert2/sweetalert2.min.js"></script>
-    <script src="<?php echo $route ?>plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/jszip/jszip.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/toastr/toastr.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
     <!-- AdminLTE App -->
-    <script src="<?php echo $route ?>dist/js/adminlte.min.js"></script>
+    <script src="<?php echo PATHP?>dist/js/adminlte.min.js"></script>
     <!-- Generic script for utilities -->
     <script type="text/javascript" src="views/js/utils.js"></script>
     <!-- Page specific script -->
