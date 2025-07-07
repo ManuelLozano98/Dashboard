@@ -6,9 +6,13 @@ $queryParams = $_POST;
 switch ($method) {
     case 'GET':
         if (empty($_GET)) {
+            getUsers();
         } else {
-            if ($_GET["token"]) {
+            if (isset($_GET["token"])) {
                 confirmRegistration($_GET["token"]);
+            }
+            if (isset($_GET["getDocumentTypes"])) {
+                getDocumentTypes();
             }
         }
         break;
@@ -16,8 +20,13 @@ switch ($method) {
         if (empty($_GET)) {
             save($method, $queryParams);
         } else {
-            if (($_GET["q"] === "login")) {
-                login($queryParams);
+            if (isset($_GET["q"])) {
+                if (($_GET["q"] === "login")) {
+                    login($queryParams);
+                }
+            }
+            if (isset($_GET["resend"])) {
+                sendEmailVerification($_GET["resend"]);
             }
         }
         break;
@@ -25,5 +34,6 @@ switch ($method) {
 
         break;
     case 'DELETE':
+        deleteUser($_REQUEST);
         break;
 }
