@@ -1,5 +1,5 @@
-<?php 
-  require_once '../configurations/config.php';
+<?php
+require_once '../configurations/config.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,19 +9,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php echo SITE ?> | Confirm</title>
 
-    
-
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="<?php echo PATHP?>plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="<?php echo PATHP ?>plugins/fontawesome-free/css/all.min.css">
     <!-- icheck bootstrap -->
-    <link rel="stylesheet" href="<?php echo PATHP?>plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo PATHP ?>plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="<?php echo PATHP?>dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="<?php echo PATHP?>plugins/sweetalert2/sweetalert2.min.css">
-    <link rel="stylesheet" href="<?php echo PATHP?>plugins/toastr/toastr.min.css">
+    <link rel="stylesheet" href="<?php echo PATHP ?>dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="<?php echo PATHP ?>plugins/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="<?php echo PATHP ?>plugins/toastr/toastr.min.css">
     <style>
         .button {
             background-color: #007bff;
@@ -66,7 +64,7 @@
                     <h2>Confirm your email address</h2>
                     <p>We've sent you a link to your email to verify your account.</p>
                     <a href="login" class="button">Go to log in</a>
-                    <p class="small">Didn't receive the email? <a href="#">Resend</a></p>
+                    <p class="small">Didn't receive the email? <a id="resend" href="">Resend</a></p>
                     <p>If you can't click the button, copy and paste the following link into your browser: <a
                             href="login">Link</a></p>
                 </div>
@@ -77,14 +75,31 @@
     </div>
 
     <!-- jQuery -->
-    <script src="<?php echo PATHP?>plugins/jquery/jquery.min.js"></script>
+    <script src="<?php echo PATHP ?>plugins/jquery/jquery.min.js"></script>
     <!-- Bootstrap 4 -->
-    <script src="<?php echo PATHP?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="<?php echo PATHP ?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
-    <script src="<?php echo PATHP?>plugins/sweetalert2/sweetalert2.min.js"></script>
-    <script src="<?php echo PATHP?>plugins/toastr/toastr.min.js"></script>
-    <script src="<?php echo PATHP?>dist/js/adminlte.min.js"></script>
+    <script src="<?php echo PATHP ?>plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script src="<?php echo PATHP ?>plugins/toastr/toastr.min.js"></script>
+    <script src="<?php echo PATHP ?>dist/js/adminlte.min.js"></script>
     <script src="views/js/utils.js"></script>
+    <script>
+
+        $("#resend").click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: `api/users?resend=${sessionStorage.getItem("email")}`,
+                type: "POST",
+                dataType: "json",
+                success: function (xhr) {
+                    getSuccessResponse(xhr,function(){});
+                },
+                error: function (xhr) {
+                    getErrorResponse(xhr);
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
