@@ -110,7 +110,12 @@ function verifyForm() {
                 success: function (xhr) {
                     if (xhr.status === "201") {
                         getSuccessResponse(xhr, function () {
-                             window.open("confirm-email", '_blank');
+                            sessionStorage.setItem("email",xhr.data.email);
+                            setTimeout(() => {
+                                window.open("confirm-email", "_self");
+                            }, 3000);
+
+
                         });
                     }
                     else {
