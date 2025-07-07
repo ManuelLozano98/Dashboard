@@ -140,6 +140,18 @@ class Response
         $this->setError(null);
         $this->setMessage("Successful login");
     }
+    public function getEmailVerificationSuccessfullyMessage()
+    {
+        $this->setError(null);
+        $this->setStatus("201");
+        $this->setMessage("Email sent successfully");
+    }
+    public function getEmailVerificationErrorMessage()
+    {
+        $this->setError("Email error");
+        $this->setStatus("200");
+        $this->setMessage("An error occurred, email could not be sent");
+    }
 
 
 
