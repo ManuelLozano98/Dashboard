@@ -71,12 +71,7 @@ require_once 'header.php';
                                         <div class="form-group">
                                             <label for="description">Description</label>
                                             <textarea id="description" name="description" class="form-control" rows="4"
-<<<<<<< HEAD
-                                                maxlength="255" oninput="updateCounter()"
-                                                placeholder="Write here..."></textarea>
-=======
                                                 maxlength="255" placeholder="Write here..."></textarea>
->>>>>>> develop
                                             <small class="form-text text-muted text-right">
                                                 <span id="counter">0/255</span>
                                             </small>
@@ -89,11 +84,7 @@ require_once 'header.php';
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label for="code">Product Code</label>
-<<<<<<< HEAD
-                                                <button type="button" id="generate-code"  style="margin-left: 5px"
-=======
                                                 <button type="button" id="generate-code" style="margin-left: 5px"
->>>>>>> develop
                                                     class="btn btn-primary btn-sm">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                         fill="currentColor" class="bi bi-arrow-clockwise"
@@ -109,10 +100,7 @@ require_once 'header.php';
                                                 </button>
                                                 <input type="number" min="0" class="form-control" name="code" id="code"
                                                     required>
-<<<<<<< HEAD
-=======
                                                 <svg id="barcode"></svg>
->>>>>>> develop
                                             </div>
                                         </div>
                                     </div>
@@ -123,6 +111,7 @@ require_once 'header.php';
                                             <label for="categorySelect">Select Category</label>
                                             <select id="categorySelect" name="id_category" class="form-control">
                                             </select>
+                                            <a id="categoriesModal" style="display:none" href="categories?openModal=true" target="_blank">Don't have any categories? Add one</a>
                                         </div>
                                     </div>
 
@@ -139,11 +128,7 @@ require_once 'header.php';
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-<<<<<<< HEAD
-                            <button type="button" class="btn btn-primary" onclick="insert()">Save changes</button>
-=======
                             <button id="save" type="button" class="btn btn-primary">Save changes</button>
->>>>>>> develop
                         </div>
 
                     </div>
@@ -162,36 +147,6 @@ require_once 'header.php';
                             </button>
                         </div>
                         <div class="modal-body">
-<<<<<<< HEAD
-                            <form name="form-edit" id="form-edit" method="POST">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="form-group">
-                                            <label for="edit-name">Name</label>
-                                            <input type="hidden" name="edit-idarticle" id="edit-idarticle">
-                                            <input type="text" class="form-control" name="edit-name" id="edit-name"
-                                                placeholder="Write a name for a article" value="" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12">
-                                        <label for="edit-description" class="form-label fw-semibold">Description</label>
-                                        <textarea id="edit-description" class="form-control" rows="4" maxlength="255"
-                                            oninput="updateCounter()" placeholder="Write here..." value=""></textarea>
-                                        <div class="text-end text-muted mt-1">
-                                            <span id="counter">0/255</span>
-                                        </div>
-                                    </div>
-                                    <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                                        <label class="custom-control-label" for="customSwitch1">Active</label>
-                                    </div>
-
-
-                                </div>
-                                <div class="modal-footer justify-content-between">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="edit()">Save changes</button>
-=======
                             <!-- Tabs -->
                             <ul class="nav nav-tabs" id="edit-formTabs" role="tablist">
                                 <li class="nav-item">
@@ -281,7 +236,6 @@ require_once 'header.php';
                                 <div class="modal-footer justify-content-between">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                     <button id="edit-save" type="button" class="btn btn-primary">Save changes</button>
->>>>>>> develop
                                 </div>
 
                             </form>
@@ -357,31 +311,28 @@ require_once 'header.php';
 
     </div>
 
-    <script src="<?php echo $route ?>plugins/jquery/jquery.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/jquery/jquery.min.js"></script>
     <!-- Bootstrap 4 -->
-    <script src="<?php echo $route ?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- DataTables  & Plugins -->
-    <script src="<?php echo $route ?>plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="<?php echo $route ?>plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="<?php echo $route ?>plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="<?php echo $route ?>plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-    <script src="<?php echo $route ?>plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="<?php echo $route ?>plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="<?php echo $route ?>plugins/jszip/jszip.min.js"></script>
-    <script src="<?php echo $route ?>plugins/pdfmake/pdfmake.min.js"></script>
-    <script src="<?php echo $route ?>plugins/pdfmake/vfs_fonts.js"></script>
-    <script src="<?php echo $route ?>plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="<?php echo $route ?>plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="<?php echo $route ?>plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-    <script src="<?php echo $route ?>plugins/toastr/toastr.min.js"></script>
-    <script src="<?php echo $route ?>plugins/sweetalert2/sweetalert2.min.js"></script>
-    <script src="<?php echo $route ?>plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
-<<<<<<< HEAD
-=======
-    <script src="<?php echo $route ?>plugins/jsbarcode/JsBarcode.all.min.js"></script>
->>>>>>> develop
+    <script src="<?php echo PATHP?>plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/jszip/jszip.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/toastr/toastr.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+    <script src="<?php echo PATHP?>plugins/jsbarcode/JsBarcode.all.min.js"></script>
     <!-- AdminLTE App -->
-    <script src="<?php echo $route ?>dist/js/adminlte.min.js"></script>
+    <script src="<?php echo PATHP?>dist/js/adminlte.min.js"></script>
     <!-- Generic script for utilities -->
     <script type="text/javascript" src="views/js/utils.js"></script>
     <!-- Page specific script -->

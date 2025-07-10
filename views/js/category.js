@@ -5,12 +5,19 @@
  */
 
 function init() {
+  loadModalByURL();
   getCategories();
   loadCounter();
   loadButtonsAction();
   loadEditForm();
 }
 
+function loadModalByURL() {
+  let params = new URLSearchParams(window.location.search);
+  if (params.get("openModal") === "true") {
+    $('#modal-default').modal('show');
+  }
+}
 function insert() {
   let category = {
     name: $("#name").val(),
