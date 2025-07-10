@@ -14,6 +14,12 @@ function getUsers()
     $users = $user->getUsers();
     echo json_encode($users);
 }
+function getDocumentTypes()
+{
+    require '../models/document_type.php';
+    $document = new Document_Type();
+    echo json_encode($document->getAll());
+}
 
 function login($query)
 {
@@ -21,7 +27,10 @@ function login($query)
     if (validateFields($query)) {
         $user = new User();
         $response = $user->checkLogin($query);
-
+        if ($response->getMessage() === "Successful login") {
+            session_start();
+            $_SESSION["user"] = $user->getUserCreatedInfo();
+        }
     } else {
         $response = new Response();
         $response->getInvalidLoginMessage();
@@ -30,15 +39,30 @@ function login($query)
 
 }
 
-function confirmRegistration($query){
+function confirmRegistration($query)
+{
     $user = new User();
     $response = $user->verifyToken($query);
-    if($response->getStatus() === 201){
+    if ($response->getStatus() === 201) {
         header("Location: ../email-confirmed");
-    }
-    else{
+    } else {
         header("Location: ../email-confirmed?user=not-registered");
     }
+}
+
+function sendEmailVerification($email)
+{
+    $response = new Response();
+    $user = new User();
+    $data = $user->findByEmail($email);
+    $userDb = new User($data);
+    if (Mail::sendEmailVerification($userDb->getEmail(), $userDb->getUsername(), $userDb->getToken())) {
+        $response->getEmailVerificationSuccessfullyMessage();
+    } else {
+        $response->getEmailVerificationErrorMessage();
+    }
+    echo json_encode($response->buildResponse());
+
 }
 
 function save($method, $request)
@@ -53,7 +77,7 @@ function save($method, $request)
         $response = new Response();
         $response->getRequiredFieldsMissingMessage();
     }
-    echo json_encode($response);
+    echo json_encode($response->buildResponse());
 }
 
 function validateFields($params)
