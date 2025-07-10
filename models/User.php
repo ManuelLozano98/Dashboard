@@ -54,7 +54,7 @@ class User
         $this->registration_date = (new Datetime("now"))->format('Y-m-d H:i:s');
     }
 
-    public function getUsers()
+    public function getAll()
     {
         $sql = "SELECT ID_USER,NAME,EMAIL,USERNAME,PHONE,IMAGE,ADDRESS,DOCUMENT,ID_DOCUMENT_TYPE,ACTIVE,VERIFICATION_TOKEN,TOKEN_EXPIRES_AT,REGISTRATION_DATE FROM USERS";
         $records = $this->getCountUsers();
