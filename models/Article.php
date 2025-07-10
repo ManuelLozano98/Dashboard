@@ -31,9 +31,10 @@ class Article
 
     private function insert($article)
     {
+        $response = new Response();
         if ($this->findByName($article["name"]) || $this->findByCode($article["code"])) {
-            $this->response->getAddConflictMessage("Article");
-            return $this->response->buildResponse();
+            $response->getAddConflictMessage("Article");
+            return $response->buildResponse();
 
         }
         $img = "";
@@ -42,9 +43,9 @@ class Article
         }
         $sql = "INSERT INTO ARTICLES (ID_CATEGORY, CODE, NAME, DESCRIPTION, IMAGE, STOCK, ACTIVE) VALUES (?,?,?,?,?,?,?)";
         preparedQuerySQL($sql, "issssii", $article["id_category"], $article["code"], $article["name"], $article["description"], $img, $article["stock"], 1);
-        $this->response->getCreatedSuccesfullyMessage("Article");
-        $this->response->setData($this->findByName($article["name"]));
-        return $this->response->buildResponse();
+        $response->getCreatedSuccesfullyMessage("Article");
+        $response->setData($this->findByName($article["name"]));
+        return $response->buildResponse();
     }
 
     private function saveImage($img)
@@ -181,7 +182,8 @@ class Article
     }
     private function validateFields($fields, $method)
     {
-        $this->response->getRequiredFieldsMissingMessage();
+        $response = new Response();
+        $response->getRequiredFieldsMissingMessage();
         if ($method === "POST") {
             $requiredFields = ["id_category", "code", "name"];
             $validatedFields = 0;
@@ -189,14 +191,14 @@ class Article
                 if (array_key_exists($field, $fields) && $fields[$field] !== "") {
                     $validatedFields++;
                 } else {
-                    $this->response->setDetails([$field => "This field is required"]);
+                    $response->setDetails([$field => "This field is required"]);
                 }
 
             }
             if ($validatedFields === count($requiredFields)) {
                 return true;
             }
-            return $this->response->buildResponse();
+            return $response->buildResponse();
         } else {
             $requiredFields = ["id_article", "edit-id_category", "edit-code", "edit-name"];
             $validatedFields = 0;
@@ -204,7 +206,7 @@ class Article
                 if (array_key_exists($field, $fields) && $fields[$field] !== "") {
                     $validatedFields++;
                 } else {
-                    $this->response->setDetails([$field => "This field is required"]);
+                    $response->setDetails([$field => "This field is required"]);
                 }
 
             }
@@ -212,7 +214,7 @@ class Article
                 return true;
             }
 
-            return $this->response->getDetails() ? $this->response->buildResponse() : true;
+            return $response->getDetails() ? $response->buildResponse() : true;
         }
     }
 
