@@ -11,7 +11,7 @@ require_once '../models/user.php';
 function getUsers()
 {
     $user = new User();
-    $users = $user->getUsers();
+    $users = $user->getAll();
     echo json_encode($users);
 }
 function getDocumentTypes()
