@@ -15,7 +15,6 @@ require_once '../configurations/database.php';
 require_once 'Response.php';
 require_once 'Mail.php';
 
-use PHPMailer\PHPMailer\Exception;
 
 class User
 {
@@ -33,6 +32,7 @@ class User
     private $tokenExpiredAt;
 
     private $active;
+    private $registration_date;
 
     private Response $response;
 
@@ -47,10 +47,23 @@ class User
         $this->address = $data['address'] ?? "";
         $this->image = $data['image'] ?? "";
         $this->document = $data['document'] ?? "";
-        $this->document_type = $data['document_type'] ?? "";
+        $this->document_type = $data['document_type'] ?? 1;
         $this->active = $data['active'] ?? 0;
-        $this->token = "";
-        $this->tokenExpiredAt = "";
+        $this->token = $data['verification_token'] ?? "";
+        $this->tokenExpiredAt = $data['token_expires_at'] ?? "";
+        $this->registration_date = (new Datetime("now"))->format('Y-m-d H:i:s');
+    }
+
+    public function getUsers()
+    {
+        $sql = "SELECT ID_USER,NAME,EMAIL,USERNAME,PHONE,IMAGE,ADDRESS,DOCUMENT,ID_DOCUMENT_TYPE,ACTIVE,VERIFICATION_TOKEN,TOKEN_EXPIRES_AT,REGISTRATION_DATE FROM USERS";
+        $records = $this->getCountUsers();
+        $query = querySQL($sql);
+        $data = array(
+            "records" => (int) $records[0]["RECORDS"],
+            "data" => $query
+        );
+        return $data;
     }
 
     private function generateToken(User $user)
@@ -92,49 +105,29 @@ class User
         $this->response = new Response();
         if ($this->findByUsername($user["username"]) || $this->findByEmail($user["email"])) {
             $this->response->getAddConflictMessage("User");
-            return $this->response->buildResponse();
+            return $this->response;
 
         }
         $hash = password_hash($user["password"], PASSWORD_BCRYPT);
         $newUser = new User($user);
         $newUser->setPassword($hash);
         $this->generateToken($newUser);
-        $sql = "INSERT INTO USERS VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-        preparedQuerySQLObject($sql, "isssssssssiss", $newUser, ["id", "name", "email", "password", "username", "phone", "image", "address", "document", "document_type", "active", "token", "tokenExpiredAt"]);
-        if ($newUser->sendEmail($newUser->getEmail(), $newUser->getUsername(), $newUser->getToken())) {
+        $sql = "INSERT INTO USERS VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        if (preparedQuerySQLObject($sql, "issssssssiisss", $newUser, ["id", "name", "email", "password", "username", "phone", "image", "address", "document", "document_type", "active", "token", "tokenExpiredAt", "registration_date"])) {
+            $this->response->getCreatedSuccesfullyMessage("User");
+            $this->response->setData($newUser->getUserCreatedInfo());
+        } else {
+            $this->response->setMessage("An error occurred, registration could not be completed");
+        }
+        if (Mail::sendEmailVerification($newUser->getEmail(), $newUser->getUsername(), $newUser->getToken())) {
             $this->response->setDetails(["email" => "Email sent successfully"]);
         } else {
             $this->response->setDetails(["email" => "Email could not be sent. Mailer Error"]);
         }
-        $this->response->getCreatedSuccesfullyMessage("User");
-        $this->response->setData($newUser->getUserCreatedInfo());
-        return $this->response->buildResponse();
+
+        return $this->response;
     }
 
-    private function sendEmail($email, $username, $token)
-    {
-        $verifyUrl = "http://localhost/AdminDashboard/api/users?token=$token";
-        try {
-            $mail = Mail::createMailer();
-            $mail->addAddress($email, $username);
-            $mail->Subject = 'Verify Your Email Address';
-            $mail->Body = '
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
-                <h2>Hello ' . htmlspecialchars($username) . ',</h2>
-                <p>Thank you for registering. Please click the link below to verify your email address:</p>
-                <p><a href="' . $verifyUrl . '" style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;">Verify Email</a></p>
-                <p>If the button doesn\'t work, copy and paste this URL into your browser:</p>
-                <p>' . $verifyUrl . '</p>
-                <p>If you didn\'t register on our platform, please ignore this email.</p>
-            </div>';
-            $mail->AltBody = "Hello $username,\nPlease verify your email: $verifyUrl" . " If you didn't register on our platform, please ignore this email.";
-            return $mail->send();
-        } catch (Exception $e) {
-            echo "Mailer Error: " . $mail->ErrorInfo;
-            echo "<pre>" . $e->getMessage() . "</pre>";
-        }
-
-    }
     private function saveImage($img)
     {
         $tmpName = $img['tmp_name'];
@@ -158,6 +151,62 @@ class User
 
     public function edit($data)
     {
+        $response = new Response();
+        $dbUser = $this->findById($data["id_user"]);
+        if (!$dbUser) {
+            return $response->getUpdatedNotFoundMessage("User");
+        }
+        $emailTaken = $this->findByEmail($data["email"]);
+        if ($emailTaken) {
+            if (($emailTaken["email"] === $data["email"] && $dbUser["id_user"] !== $emailTaken["id_user"])) {
+                $response->getAddConflictMessage("user");
+                return $response;
+            }
+        }
+
+        $img = $dbUser["image"];
+        if (isset($_FILES["image"]) && $_FILES["image"]['error'] === UPLOAD_ERR_OK) {
+            $img = $this->saveImage($_FILES["image"]);
+        }
+
+        $set = "";
+        $types = "";
+        $password = "";
+        $email = "";
+
+        $user = new User($data);
+        $user->setId($dbUser["id_user"]);
+        $user->setImage($img);
+
+        if ($data["password"] !== "") {
+            $set = "PASSWORD=?, ";
+            $types = "s";
+            $password = "password";
+            $hash = password_hash($data["password"], PASSWORD_BCRYPT);
+            $user->setPassword($hash);
+
+        }
+        if (!empty($data["email"] && $data["email"] !== $dbUser["email"])) {
+            $set .= "EMAIL=?, ";
+            $types .= "s";
+            $email = "email";
+        }
+
+        $sql = "UPDATE USERS SET NAME=?, " . $set . "PHONE=?, IMAGE=?, ADDRESS=?, DOCUMENT=?, ID_DOCUMENT_TYPE=?, ACTIVE=? WHERE ID_USER=?";
+        $properties = ["name"];
+        if ($password !== "")
+            array_push($properties, $password);
+        if ($email !== "")
+            array_push($properties, $email);
+        array_push($properties, "phone", "image", "address", "document", "document_type", "active", "id");
+
+        if (preparedQuerySQLObject($sql, "s" . $types . "ssssiii", $user, $properties)) {
+            $response->getUpdatedSuccesfullyMessage("User");
+            $response->setData($user);
+        } else {
+            $response->getUpdatedExistsMessage("users");
+        }
+        return $response;
 
     }
 
@@ -235,6 +284,7 @@ class User
         return [
             "name" => $this->getName(),
             "username" => $this->getUsername(),
+            "email" => $this->getEmail()
         ];
     }
 
@@ -282,7 +332,7 @@ class User
             }
             return $response->buildResponse();
         } else {
-            $requiredFields = ["id_user", "name", "email", "password", "phone", "document"];
+            $requiredFields = ["id_user"];
             $validatedFields = 0;
             foreach ($requiredFields as $field) {
                 if (array_key_exists($field, $fields) && $fields[$field] !== "") {
@@ -555,6 +605,26 @@ class User
     public function setTokenExpiredAt($tokenExpiredAt)
     {
         $this->tokenExpiredAt = $tokenExpiredAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of registration_date
+     */
+    public function getRegistrationDate()
+    {
+        return $this->registration_date;
+    }
+
+    /**
+     * Set the value of registration_date
+     *
+     * @return  self
+     */
+    public function setRegistrationDate($registration_date)
+    {
+        $this->registration_date = $registration_date;
 
         return $this;
     }
