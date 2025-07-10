@@ -18,6 +18,11 @@ switch ($method) {
         break;
     case 'POST':
         if (empty($_GET)) {
+            if (!empty($queryParams["_method"])) {
+                if ($queryParams["_method"] === "PUT") {
+                    $method = "PUT";
+                }
+            }
             save($method, $queryParams);
         } else {
             if (isset($_GET["q"])) {
