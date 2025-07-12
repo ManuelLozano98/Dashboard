@@ -2,7 +2,7 @@
 class Response
 {
     private $message;
-    private $status;
+    private $status = 200;
     private $data;
     private $error;
     private $details = [];
@@ -59,10 +59,10 @@ class Response
 
     public function setDetails($details): void
     {
-        array_push($this->details, $details);
+        $this->details[] = $details;
     }
 
-    public function buildResponse()
+    public function toArray()
     {
         return [
             'error' => $this->getError(),
@@ -74,86 +74,69 @@ class Response
 
 
     }
-
-    public function getAddConflictMessage($tableName)
+    public function toJson(): string
     {
-        $this->setError("Conflict");
-        $this->setMessage("This $tableName does already exists");
-        $this->setStatus("409");
+        return json_encode($this->toArray());
     }
 
-    public function getCreatedSuccesfullyMessage($tableName)
+
+    public function setSuccessResponse(string $message, mixed $data = null, int $status = 200)
     {
         $this->setError(null);
-        $this->setStatus("201");
-        $this->setMessage("$tableName created successfully");
-    }
-    public function getUpdatedNotFoundMessage($tableName)
-    {
-        $this->setError("Category not found");
-        $this->setStatus("404");
-        $this->setMessage("This $tableName cannot be updated because it does not exist");
-    }
-    public function getUpdatedExistsMessage($tableName)
-    {
-        $this->setError("Conflict");
-        $this->setMessage("This $tableName cannot be updated because it already exists");
-        $this->setStatus("409");
+        $this->setStatus($status);
+        $this->setMessage($message);
+        $this->setData($data);
+        return $this;
     }
 
-    public function getUpdatedSuccesfullyMessage($tableName)
+    public function setErrorResponse(string $error, string $message, int $status = 400)
     {
-        $this->setError(null);
-        $this->setStatus("201");
-        $this->setMessage("$tableName updated successfully");
+        $this->setError($error);
+        $this->setStatus($status);
+        $this->setMessage($message);
+        return $this;
     }
 
-    public function getDeletedNotFoundMessage($tableName)
+    public function created(string $resource)
     {
-        $this->setError("$tableName not found");
-        $this->setStatus("404");
-        $this->setMessage("This $tableName cannot be deleted because it does not exist");
+        return $this->setSuccessResponse("$resource created successfully", null, 201);
     }
 
-    public function getDeletedSuccesfullyMessage($tableName)
+    public function updated(string $resource)
     {
-        $this->setError(null);
-        $this->setStatus("204");
-        $this->setMessage("$tableName deleted successfully");
-        $this->setData(null);
+        return $this->setSuccessResponse("$resource updated successfully", null, 200);
     }
 
-    public function getRequiredFieldsMissingMessage()
+    public function deleted(string $resource)
     {
-        $this->setStatus("400");
-        $this->setError("Bad Request");
-        $this->setMessage("Required fields are missing");
-    }
-    public function getInvalidLoginMessage()
-    {
-        $this->setStatus("200");
-        $this->setError("Invalid credentials");
-    }
-    public function getValidLoginMessage()
-    {
-        $this->setStatus("200");
-        $this->setError(null);
-        $this->setMessage("Successful login");
-    }
-    public function getEmailVerificationSuccessfullyMessage()
-    {
-        $this->setError(null);
-        $this->setStatus("201");
-        $this->setMessage("Email sent successfully");
-    }
-    public function getEmailVerificationErrorMessage()
-    {
-        $this->setError("Email error");
-        $this->setStatus("200");
-        $this->setMessage("An error occurred, email could not be sent");
+        return $this->setSuccessResponse("$resource deleted successfully", null, 204);
     }
 
+    public function notFound(string $resource)
+    {
+        return $this->setErrorResponse("$resource not found", "The $resource does not exist", 404);
+    }
 
+    public function conflict(string $resource)
+    {
+        return $this->setErrorResponse("Conflict", "This $resource already exists", 409);
+    }
 
+    public function missingFields()
+    {
+        return $this->setErrorResponse("Bad Request", "Required fields are missing", 400);
+    }
 
+    public function invalidCredentials()
+    {
+        return $this->setErrorResponse("Invalid credentials", "Login failed", 401);
+    }
+
+    public function loginSuccess()
+    {
+        return $this->setSuccessResponse("Login successful", null, 200);
+    }
 }
+
+
+
