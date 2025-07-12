@@ -10,23 +10,31 @@ require_once "config.php";
 
 $db = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME) or die('There was an error connecting to the database' . mysqli_errno($db));
 
-function querySQL($sql) {
+function querySQL($sql)
+{
     global $db;
     $q = $db->query($sql);
     $data = [];
-    while($row = mysqli_fetch_assoc($q)){
-        $data[]=$row;
+    while ($row = mysqli_fetch_assoc($q)) {
+        $data[] = $row;
     }
     return $data;
 }
-function preparedQuerySQL($sql,$types,...$params){
+function preparedQuerySQL($sql, $types, ...$params)
+{
     global $db;
     $stmt = $db->prepare($sql);
-    $stmt->bind_param($types,...$params);
+    $stmt->bind_param($types, ...$params);
     $q = $stmt->execute();
     return $q;
 }
-function preparedQuerySQLObject($sql, $types, $object, $propertyNames) {
+function getId()
+{
+    global $db;
+    return $db->insert_id;
+}
+function preparedQuerySQLObject($sql, $types, $object, $propertyNames)
+{
     global $db;
     $params = [];
     foreach ($propertyNames as $prop) {
@@ -43,7 +51,8 @@ function preparedQuerySQLObject($sql, $types, $object, $propertyNames) {
     return $q;
 }
 
-function getDataPreparedQuerySQL($sql,$types,...$params){
+function getDataPreparedQuerySQL($sql, $types, ...$params)
+{
     global $db;
     $stmt = $db->prepare($sql);
     $stmt->bind_param($types,...$params);
