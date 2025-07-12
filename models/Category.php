@@ -83,7 +83,7 @@ class Category
     }
     public static function findByIdAndName()
     {
-        $sql = "SELECT ID_CATEGORY, NAME FROM CATEGORIES";
+        $sql = "SELECT id_category, name FROM CATEGORIES";
         $query = querySQL($sql);
         $categories = [];
         foreach ($query as $category) {
