@@ -43,6 +43,7 @@ function deleteItem(id) {
       $.ajax({
         url: `api/categories?id=${id}`,
         type: "DELETE",
+        dataType: "json",
         success: function (result) {
           toastr.success(result.message);
           getCategories();
@@ -56,10 +57,10 @@ function deleteItem(id) {
 }
 function edit() {
   let category = {
-    id: $("#edit-idcategory").val(),
+    id: parseInt($("#edit-idcategory").val()),
     name: $("#edit-name").val(),
     description: $("#edit-description").val(),
-    active: $("#customSwitch1").prop("checked")
+    active: $("#customSwitch1").prop("checked") ? 1 : 0
   };
   $.ajax({
     url: "api/categories",
@@ -107,7 +108,7 @@ function loadEditForm() {
     $("#edit-idcategory").val(data.id_category);
     $("#edit-description").val(data.description);
     updateCounter("edit-description", "edit-counter");
-    data.active === "0" ? $("#customSwitch1").prop("checked", false) : $("#customSwitch1").prop("checked", true);
+    data.active === 0 ? $("#customSwitch1").prop("checked", false) : $("#customSwitch1").prop("checked", true);
   });
 }
 
