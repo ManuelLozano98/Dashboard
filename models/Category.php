@@ -33,10 +33,10 @@ class Category
     public function toArray()
     {
         return [
-            'id' => $this->id,
+            'id' => (int) $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'active' => $this->active,
+            'active' => (int) $this->active,
         ];
     }
 

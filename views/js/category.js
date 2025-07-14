@@ -87,7 +87,7 @@ function getCategories() {
       dataType: "json",
     },
     columns: [
-      { data: "id_category" },
+      { data: "id" },
       { data: "name" },
       { data: "description" },
       { data: "active" },
@@ -105,7 +105,7 @@ function loadEditForm() {
     }
     let data = table.row(row).data();
     $("#edit-name").val(data.name);
-    $("#edit-idcategory").val(data.id_category);
+    $("#edit-idcategory").val(data.id);
     $("#edit-description").val(data.description);
     updateCounter("edit-description", "edit-counter");
     data.active === 0 ? $("#customSwitch1").prop("checked", false) : $("#customSwitch1").prop("checked", true);
