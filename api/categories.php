@@ -8,7 +8,7 @@ $uri = array_filter($uri, fn($u) => !empty($u));
 switch ($method) {
     case 'GET':
         $categoryService = new CategoryService();
-        if (isset($uri["4"])) { //Admindashboard/api/categories/names
+        if (isset($uri["4"]) && $uri["4"] === "names") { //Admindashboard/api/categories/names
             $categories = $categoryService->getCategoriesName();
             $data = array_map(function (Category $c) {
                 return [
@@ -20,12 +20,7 @@ switch ($method) {
         } else {
             $categories = $categoryService->getCategories();
             $data = array_map(function (Category $category) {
-                return [
-                    'id_category' => (int) $category->getId(),
-                    'name' => $category->getName(),
-                    'description' => $category->getDescription(),
-                    'active' => (int) $category->getActive()
-                ];
+                return $category->toArray();
             }, $categories);
             echo json_encode(['data' => $data]);
         }
