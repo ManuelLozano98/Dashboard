@@ -1,27 +1,5 @@
 RewriteEngine On
 RewriteBase /AdminDashboard/
-Options -Indexes
-
-# HOME
-RewriteRule ^$ views/index.php [L]
-RewriteRule ^home$ views/index.php [L]
-
-# VIEWS
-RewriteRule ^categories$ views/category.php [L]
-RewriteRule ^articles$ views/articles.php [L]
-RewriteRule ^users$ views/users.php [L]
-RewriteRule ^login$ views/login.php [L]
-RewriteRule ^forgot-password$ views/forgot-password.php [L]
-RewriteRule ^recover-password$ views/recover-password.php [L]
-RewriteRule ^register$ views/register.php [L]
-RewriteRule ^confirm-email$ views/confirm-email.php [L]
-RewriteRule ^email-confirmed$ views/email-confirmed.php [L]
-
-# API
-RewriteRule ^api/([a-zA-Z0-9_-]+)$ api/$1.php [L]
-
-# ERROR 404
-ErrorDocument 404 /AdminDashboard/views/404.php
-
-#Log out
-RewriteRule ^logout$ views/logout.php [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
