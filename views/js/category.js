@@ -41,7 +41,7 @@ function deleteItem(id) {
   getDeleteMsg().then((result) => {
     if (result.isConfirmed) {
       $.ajax({
-        url: `api/categories?id=${id}`,
+        url: `api/categories/${id}`,
         type: "DELETE",
         dataType: "json",
         success: function (result) {
