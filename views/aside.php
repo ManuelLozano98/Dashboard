@@ -1,5 +1,5 @@
 <?php 
-  require_once '../configurations/config.php';
+  require_once __DIR__ .'/../configurations/config.php';
 ?>
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
@@ -62,7 +62,15 @@
                             Users
                         </p>
                     </a>
-                </li>                
+                </li>
+                <li class="nav-item">
+                    <a href="roles" class="nav-link">
+                        <i class="nav-icon fas fa-key"></i>
+                        <p>
+                            Roles
+                        </p>
+                    </a>
+                </li>                 
             </ul>
         </nav>
         <!-- /.sidebar-menu -->
