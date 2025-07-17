@@ -11,7 +11,7 @@
  *
  * @author Usuario
  */
-require_once '../configurations/database.php';
+require_once __DIR__ . '/../configurations/database.php';
 
 class Category
 {

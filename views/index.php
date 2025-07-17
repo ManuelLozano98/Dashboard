@@ -1,4 +1,4 @@
-<?php require_once './header.php' ?>    
+<?php require_once __DIR__ .'/header.php' ?>
 
 
 <body class="hold-transition sidebar-mini layout-fixed">
