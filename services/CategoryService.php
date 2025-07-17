@@ -1,7 +1,7 @@
 <?php
 
-require_once '../models/Category.php';
-require_once '../models/Response.php';
+require_once __DIR__ . '/../models/Category.php';
+require_once __DIR__ . '/../models/Response.php';
 
 class CategoryService
 {
@@ -9,6 +9,10 @@ class CategoryService
     public function getCategories()
     {
         return Category::getAll();
+    }
+    public function getCategory($id)
+    {
+        return Category::findById($id);
     }
     public function getCategoriesName()
     {
