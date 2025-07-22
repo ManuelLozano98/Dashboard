@@ -90,7 +90,13 @@ function getCategories() {
       { data: "id" },
       { data: "name" },
       { data: "description" },
-      { data: "active" },
+      {
+        data: "active",
+        render: function (data) {
+          return data === 0 ? "No" : "Yes"
+        }
+
+      },
       getActionsColumnDataTable(),
     ]
   });

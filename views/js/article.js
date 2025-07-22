@@ -116,7 +116,12 @@ function getArticles() {
         }
       },
       { data: "stock" },
-      { data: "active" },
+      {
+        data: "active",
+        render: function (data) {
+          return data === 0 ? "No" : "Yes"
+        }
+      },
       getActionsColumnDataTable(),
     ]
   });
@@ -133,7 +138,7 @@ function loadEditForm() {
     $("#articleId").val(data.id);
     $("#edit-name").val(data.name);
     $("#edit-description").val(data.description);
-    $("#edit-price").val(data.price.substring(0,data.price.length -1)); // Remove the € symbol
+    $("#edit-price").val(data.price.substring(0, data.price.length - 1)); // Remove the € symbol
     updateCounter("edit-description", "edit-counter");
     $("#edit-stock").val(data.stock);
     $("#edit-code").val(data.code);
