@@ -54,7 +54,7 @@ class UserService
         $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
         if (in_array($fileExt, $allowed)) {
             $newName = uniqid() . '.' . $fileExt;
-            $uploadPath = __DIR__ . '/../files/users_img' . $newName;
+            $uploadPath = __DIR__ . '/../files/users_img/' . $newName;
 
             if (move_uploaded_file($tmpName, $uploadPath)) {
                 return $newName;
