@@ -1,10 +1,16 @@
 <?php
-require_once '../configurations/database.php';
+require_once __DIR__.'/../configurations/database.php';
 class Document_Type
 {
-    private $id;
-    private $name;
+    private ?int $id;
+    private string $name;
 
+
+    public function __construct($data = [])
+    {
+        $this->id = $data['id_document_type'] ?? NULL;
+        $this->name = $data['name'] ?? "";
+    }
 
     /**
      * Get the value of id
@@ -46,20 +52,30 @@ class Document_Type
         return $this;
     }
 
-    public function getAll()
+    public static function getAll()
     {
-        $sql = "SELECT ID_DOCUMENT_TYPE, NAME FROM DOCUMENT_TYPES";
-        $records = $this->getCountCategories();
+        $sql = "SELECT * FROM DOCUMENT_TYPES";
         $query = querySQL($sql);
-        $data = array(
-            "records" => (int) $records[0]["RECORDS"],
-            "data" => $query
-        );
-        return $data;
+        $documents = [];
+        foreach ($query as $document) {
+            $documents[] = new Document_Type($document);
+        }
+        return $documents;
     }
-    public function getCountCategories()
+     public static function findById($id)
     {
-        $sql = "SELECT COUNT(*) AS RECORDS FROM CATEGORIES";
-        return querySQL($sql);
+        $sql = "SELECT * FROM DOCUMENT_TYPES WHERE ID_DOCUMENT_TYPE=?";
+        $data = getDataPreparedQuerySQL($sql, "i", $id);
+        return !empty($data) ? new Document_Type($data[0]) : false;
+
+    }
+
+    public function toArray()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name
+        ];
+
     }
 }
