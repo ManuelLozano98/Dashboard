@@ -107,8 +107,9 @@ function verifyForm() {
                 data: formData,
                 processData: false,
                 contentType: false,
+                dataType: "json",
                 success: function (xhr) {
-                    if (xhr.status === "201") {
+                    if (xhr.status === 201) {
                         getSuccessResponse(xhr, function () {
                             sessionStorage.setItem("email",xhr.data.email);
                             setTimeout(() => {
@@ -119,7 +120,7 @@ function verifyForm() {
                         });
                     }
                     else {
-                        getSuccessResponse(xhr);
+                        getSuccessResponse(xhr,function(){});
                     }
                 },
                 error: function (xhr) {
