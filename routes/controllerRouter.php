@@ -55,7 +55,7 @@ switch ($uri) {
         $controller = new HomeController();
         $controller->confirmEmail();
         break;
-    case ROOT . "/email-confirmed":
+    case ROOT . "/email/confirm":
         require __DIR__ . '/../controllers/HomeController.php';
         $controller = new HomeController();
         $controller->emailConfirmed();
