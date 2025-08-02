@@ -12,8 +12,21 @@ class UserService
         return User::getAll();
     }
 
-    public function getUser($id){
+    public function getUser($id)
+    {
         return User::findById($id);
+    }
+
+    public function getUsernames()
+    {
+        $users = User::getUsernames();
+        return array_map(function ($u) {
+            return [
+                "id" => $u->getId(),
+                "username" => $u->getUsername()
+            ];
+        }, $users);
+
     }
 
     public function checkLogin($loginData)
@@ -197,15 +210,17 @@ class UserService
         return $response;
 
     }
-    public function getDocumentNameByUser(User $user){
+    public function getDocumentNameByUser(User $user)
+    {
         $this->documentTypeService = new DocumentTypeService();
-        if($this->documentTypeService->getDocument_TypeById($user->getDocumentType()) !== FALSE){
+        if ($this->documentTypeService->getDocument_TypeById($user->getDocumentType()) !== FALSE) {
             return $this->documentTypeService->getDocument_TypeById($user->getDocumentType())->getName();
         }
         return "";
     }
 
-    public function getDocumentTypes(){
+    public function getDocumentTypes()
+    {
         $this->documentTypeService = new DocumentTypeService();
         return $this->documentTypeService->getDocument_Types();
     }
