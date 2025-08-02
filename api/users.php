@@ -1,16 +1,18 @@
 <?php
 require_once __DIR__ . "/../services/UserService.php";
 require_once __DIR__ . "/../models/Response.php";
+require_once __DIR__ . "/../services/UserRolesService.php";
 
 $method = $_SERVER["REQUEST_METHOD"];
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uriParts = array_values(array_filter(explode('/', $uri)));
 $action = $uriParts[3] ?? null;
 $id = $uriParts[4] ?? null;
-
 $queryParams = $method === 'GET' ? $_GET : $_POST;
 $userService = new UserService();
 $response = new Response();
+$body = json_decode(file_get_contents('php://input'), true);
+$subAction = count($uriParts) > 4;
 
 switch ($method) {
     case 'GET':
@@ -44,27 +46,109 @@ switch ($method) {
                 return;
             }
         }
-        handlePostOrPutRequest($method, $queryParams, $userService, $response);
+        if ($subAction) {
+            $userId = $uriParts[3];
+            $action = $uriParts[4];
+            if (is_numeric($userId) && $action === "roles" && count($uriParts) === 5) {
+                $userId = (int) $userId;
+                if (empty($body["id_role"])) {
+                    $response->missingFields()->setDetails(["id_role" => "The id_role is missing"]);
+                    echo $response->toJson();
+                    return;
+                }
+                if (!is_numeric($body["id_role"])) {
+                    $response->setErrorResponse("Role id invalid", "The param id_role should be integer");
+                    echo $response->toJson();
+                    return;
+                }
+                $roleId = (int) $body["id_role"];
+                $data = [
+                    "id_user" => $userId,
+                    "id_role" => $roleId,
+                ];
+                $usersRoles = new UserRolesService();
+                echo $usersRoles->saveUserRoles('POST', $data)->toJson();
+            } else {
+                http_response_code(404);
+                echo json_encode(['error' => 'Invalid URL or resource not found']);
+            }
+        } else {
+            handlePostOrPutRequest($method, $queryParams, $userService, $response);
+        }
+
         break;
 
     case 'DELETE':
-        handleDeleteRequest($action, $userService, $response);
+        if ($subAction) {
+            $userId = $uriParts[3];
+            $action = $uriParts[4];
+            $actionResourceId = $uriParts[5] ?? NULL;
+            if (is_numeric($userId) && $action === "roles" && is_numeric($actionResourceId) && count($uriParts) === 6) {
+                $userId = (int) $userId;
+                $roleId = (int) $actionResourceId;
+                $data = [
+                    "id_user" => $userId,
+                    "id_role" => $roleId,
+                ];
+                $usersRoles = new UserRolesService();
+                echo $usersRoles->deleteByUserIdAndRoleId($userId, $roleId)->toJson();
+                return;
+            } else if (is_numeric($userId) && $action === "roles" && count($uriParts) === 5) {
+                $usersRoles = new UserRolesService();
+                $id = (int) $userId;
+                $user = $usersRoles->getUserService()->getUser($id);
+                $roles = $usersRoles->getRolesByUser($user);
+                $idUsersRoles = array_map(function ($x) {
+                    return $x["id"];
+                }, $roles["roles"]);
+                foreach ($idUsersRoles as $id) {
+                    $response = $usersRoles->deleteRolesByUserRole($id);
+
+                }
+                echo $response->toJson();
+            } else {
+                http_response_code(404);
+                echo json_encode(['error' => 'Invalid URL or resource not found']);
+            }
+        } else {
+            handleDeleteRequest($action, $userService, $response);
+        }
         break;
 }
 
 function handleGetRequest($action, $params, $service, $response)
 {
+    $uris = $GLOBALS["uriParts"];
+    $subAction = $uris[4] ?? NULL;
     if ($action === 'documentTypes') {
         $documentTypes = $service->getDocumentTypes();
         $data = array_map(fn(Document_Type $d) => $d->toArray(), $documentTypes);
         echo json_encode(['data' => $data]);
-
-    } elseif (is_numeric($action)) {
+    } elseif ($action === 'username') {
+        $usernames = $service->getUsernames();
+        echo json_encode(['data' => $usernames]);
+    } elseif ($action === "roles") {
+        $usersRoles = new UserRolesService();
+        $roles = $usersRoles->getUserswithRoles();
+        echo json_encode(["data" => $roles]);
+    } elseif (is_numeric($action) && count($uris) === 4) {
         $user = $service->getUser($action);
         if ($user !== FALSE) {
             echo json_encode($user->toArray());
         } else {
             echo $response->setSuccessResponse("No data")->toJson();
+        }
+
+    } elseif (is_numeric($action) && $subAction === "roles" && count($uris) === 5) {
+        $usersRoles = new UserRolesService();
+        $id = (int) $action;
+        $user = $usersRoles->getUserService()->getUser($id);
+        if ($user) {
+            $userRole = $usersRoles->getRolesByUser($user);
+            echo json_encode(["data" => $userRole]);
+        } else {
+            $response->setDetails(["data" => "This user has no roles"]);
+            echo $response->toJson();
         }
     } elseif ($action === null) {
         $users = $service->getUsers();
