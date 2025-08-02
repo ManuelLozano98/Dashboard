@@ -41,8 +41,9 @@ function deleteItem(id) {
   getDeleteMsg().then((result) => {
     if (result.isConfirmed) {
       $.ajax({
-        url: `api/categories?id=${id}`,
+        url: `api/categories/${id}`,
         type: "DELETE",
+        dataType: "json",
         success: function (result) {
           toastr.success(result.message);
           getCategories();
@@ -56,10 +57,10 @@ function deleteItem(id) {
 }
 function edit() {
   let category = {
-    id: $("#edit-idcategory").val(),
+    id: parseInt($("#edit-idcategory").val()),
     name: $("#edit-name").val(),
     description: $("#edit-description").val(),
-    active: $("#customSwitch1").prop("checked")
+    active: $("#customSwitch1").prop("checked") ? 1 : 0
   };
   $.ajax({
     url: "api/categories",
@@ -86,10 +87,16 @@ function getCategories() {
       dataType: "json",
     },
     columns: [
-      { data: "id_category" },
+      { data: "id" },
       { data: "name" },
       { data: "description" },
-      { data: "active" },
+      {
+        data: "active",
+        render: function (data) {
+          return data === 0 ? "No" : "Yes"
+        }
+
+      },
       getActionsColumnDataTable(),
     ]
   });
@@ -104,10 +111,10 @@ function loadEditForm() {
     }
     let data = table.row(row).data();
     $("#edit-name").val(data.name);
-    $("#edit-idcategory").val(data.id_category);
+    $("#edit-idcategory").val(data.id);
     $("#edit-description").val(data.description);
     updateCounter("edit-description", "edit-counter");
-    data.active === "0" ? $("#customSwitch1").prop("checked", false) : $("#customSwitch1").prop("checked", true);
+    data.active === 0 ? $("#customSwitch1").prop("checked", false) : $("#customSwitch1").prop("checked", true);
   });
 }
 

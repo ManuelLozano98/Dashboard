@@ -9,7 +9,7 @@ $("#loginForm").submit(function (e) {
         if (data.error === "Invalid credentials") {
             loginInvalid();
         }
-        if (data.message === "Successful login") $(location).attr("href", "home");
+        if (data.message === "Login successful") $(location).attr("href", "home");
 
     }, "json")
         .fail(function (xhr) {

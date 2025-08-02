@@ -1,5 +1,5 @@
 <?php 
-  require_once '../configurations/config.php';
+  require_once __DIR__.'/../configurations/config.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -65,16 +65,16 @@
         <!-- /.login-logo -->
         <div class="card">
             <div class="login-logo">
-                <a href="login"><b>Admin</b>Dashboard</a>
+                <a href="<?php echo ROOT.'/'?>login"><b>Admin</b>Dashboard</a>
             </div>
             <div class="card-body login-card-body">
                 <div class="container" id="verified">
-                    <img src="files/users_img/istockphoto-1416145560-612x612.jpg" width="100px" height="100px" />
+                    <img src="<?php echo ROOT.'/'?>files/users_img/istockphoto-1416145560-612x612.jpg" width="100px" height="100px" />
                     <h2>Email Verified</h2>
                     <p>Your email address was successfully verified.</p>
                 </div>
                 <div class="container" id="not-verified" style="display:none">
-                    <img src="files/users_img/error-icon-4.png" width="100px" height="100px" />
+                    <img src="<?php echo ROOT.'/'?>files/users_img/error-icon-4.png" width="100px" height="100px" />
                     <h2>Email could not be verified</h2>
                     <p>Please make sure that you have entered the information we have sent you correctly.</p>
                 </div>
@@ -103,7 +103,7 @@
         else {
             document.getElementById("redirect").classList.remove("hide-loader");
             setTimeout(() => {
-                location.href = "login";
+                location.href = "../login";
             }, 3000);
         }
 

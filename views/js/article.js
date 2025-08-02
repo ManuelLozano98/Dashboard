@@ -39,6 +39,7 @@ function insert() {
     data: form,
     processData: false,
     contentType: false,
+    dataType: "json",
     success: function (response) {
       getSuccessResponse(response, getArticles);
     },
@@ -52,8 +53,9 @@ function deleteItem(id) {
   getDeleteMsg().then((result) => {
     if (result.isConfirmed) {
       $.ajax({
-        url: `api/articles?id=${id}`,
+        url: `api/articles/${id}`,
         type: "DELETE",
+        dataType: "json",
         success: function (result) {
           toastr.success(result.message);
           getArticles();
@@ -67,15 +69,16 @@ function deleteItem(id) {
 }
 function edit() {
   let form = new FormData($("#form-edit")[0]);
-  form.append("id_article", $("#articleId").val());
+  form.append("id", $("#articleId").val());
   form.append("_method", "PUT");
-  form.append("edit-active", $("#customSwitch1").is(":checked") === true ? 1 : 0);
+  form.append("active", $("#customSwitch1").is(":checked") === true ? 1 : 0);
   $.ajax({
     url: "api/articles",
     type: "POST",
     data: form,
     processData: false,
     contentType: false,
+    dataType: "json",
     success: function (result) {
       getSuccessResponse(result, getArticles);
     },
@@ -96,23 +99,29 @@ function getArticles() {
       dataType: "json",
     },
     columns: [
-      { data: "id_article" },
+      { data: "id" },
       { data: "name" },
       { data: "code" },
       { data: "description" },
-      { data: "id_category" },
+      { data: "price" },
+      { data: "category_name" },
       {
         data: "image",
         render: function (data) {
           let result = "No image found";
           if (data !== "") {
-            result = `<img alt="${data.substring(0, data.indexOf("."))}" src="articles_img/${data}" width="100px" height="100px"/>`;
+            result = `<img alt="${data.substring(0, data.indexOf("."))}" src="files/articles_img/${data}" width="100px" height="100px"/>`;
           }
           return result;
         }
       },
       { data: "stock" },
-      { data: "active" },
+      {
+        data: "active",
+        render: function (data) {
+          return data === 0 ? "No" : "Yes"
+        }
+      },
       getActionsColumnDataTable(),
     ]
   });
@@ -126,35 +135,29 @@ function loadEditForm() {
       row = row.prev(); // needed for responsive tables
     }
     let data = table.row(row).data();
-    $("#articleId").val(data.id_article);
+    $("#articleId").val(data.id);
     $("#edit-name").val(data.name);
-    $("#edit-idarticle").val(data.id_article);
     $("#edit-description").val(data.description);
+    $("#edit-price").val(data.price.substring(0, data.price.length - 1)); // Remove the € symbol
     updateCounter("edit-description", "edit-counter");
     $("#edit-stock").val(data.stock);
     $("#edit-code").val(data.code);
     generateBarCode("#edit-barcode", data.code);
-    loadCategories("edit-categorySelect");
-    for (let element of document.getElementById("edit-categorySelect").children) { // Find the category to which the article belongs
-      element.removeAttribute("selected");
-      if (data.id_category === element.value) {
-        element.setAttribute("selected", true);
-      }
-    }
+    loadCategories("edit-categorySelect", data.id_category);
     if (data.image !== "") { // If the image exists will show up
       $("#edit-img").show();
-      $("#edit-img").attr("src", "articles_img/" + data.image);
+      $("#edit-img").attr("src", "files/articles_img/" + data.image);
     }
     else { // If the image does not exists will hide
       $("#edit-img").hide();
     }
-    data.active === "0" ? $("#customSwitch1").prop("checked", false) : $("#customSwitch1").prop("checked", true);
+    data.active === 0 ? $("#customSwitch1").prop("checked", false) : $("#customSwitch1").prop("checked", true);
   });
 }
 
 function getCategories() {
   return $.ajax({
-    url: "api/categories?getCategoriesName",
+    url: "api/categories/names",
     type: "GET",
     dataType: "json"
   });
@@ -162,28 +165,34 @@ function getCategories() {
 }
 
 
-function loadCategories(selectHtml) {
-  if (document.getElementById(selectHtml).children.length <= 0) {
-    getCategories()
-      .done(function (result) {
-        let select = document.getElementById(selectHtml);
-        for (let index = 0; index < result["data"].length; index++) {
-          let option = document.createElement("option");
-          option.text = result["data"][index].NAME;
-          option.value = result["data"][index].ID_CATEGORY;
-          select.appendChild(option);
-        }
-        if(result["data"].length<=0){
-          $("#categoriesModal").show();
-        }
-      })
-      .fail(function (result) {
-        getErrorResponse(result);
+function loadCategories(selectHtml, id = "") {
+  let select = $('#' + selectHtml);
+  let dropdown = id === "" ? $('#modal-default') : $('#modal-edit-default');
+  select.empty();
+  getCategories()
+    .done(function (result) {
+      result["data"].forEach(category => {
+        let option = new Option(category.name, category.id);
+        if (id && id === category.id) option.selected = true;
+        select.append(option);
       });
 
+      select.select2({
+        dropdownParent: dropdown,
+        theme: 'bootstrap4'
+      });
+      if (result["data"].length <= 0) {
+        $("#categoriesModal").show();
+      }
 
-  }
+    })
+    .fail(function (result) {
+      getErrorResponse(result);
+    });
+
+
 }
+
 function generateCode(element, elementId) {
   let code = document.getElementById(elementId);
   code.value = Date.now() + Math.floor(Math.random());
@@ -197,11 +206,11 @@ function generateBarCode(element, code) {
 
 function validateCode(element, code, inputId) {
   $.ajax({
-    url: `api/articles?code=${code}`,
+    url: `api/articles/check-code?code=${code}`,
     type: "GET",
     dataType: "json"
   }).done(function (result) {
-    if (result.error === "OK") {
+    if (result.status === 200) {
       $("#" + inputId).removeClass("is-invalid");
       $("#" + inputId).addClass("is-valid");
       generateBarCode("#" + element, code);

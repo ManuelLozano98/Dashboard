@@ -11,17 +11,17 @@
  *
  * @author Usuario
  */
-require_once '../configurations/database.php';
+require_once __DIR__ . '/../configurations/database.php';
 
 class Role
 {
-    private $id;
-    private $name;
+    private ?int $id;
+    private string $name;
 
-    public function __construct($id, $name)
+    public function __construct($data = [])
     {
-        $this->id = $id;
-        $this->name = $name;
+        $this->id = $data["id_role"] ?? NULL;
+        $this->name = $data["name"] ?? "";
     }
 
     /**
@@ -63,10 +63,76 @@ class Role
 
         return $this;
     }
-    public function getRole($name){
-        $sql = "SELECT * FROM ROLE WHERE NAME=?";
+    public static function getAll()
+    {
+        $sql = "SELECT * FROM ROLES";
+        $query = querySQL($sql);
+        $roles = [];
+        foreach ($query as $role) {
+            $roles[] = new Role($role);
+        }
+        return $roles;
+    }
+    public function getCountRoles()
+    {
+        $sql = "SELECT COUNT(*) AS RECORDS FROM ROLES";
+        return querySQL($sql);
+    }
+    public function getUserRolesByRole(Role $role)
+    {
+        $sql = "SELECT R.ID_ROLE, R.NAME FROM ROLES R, USERS_ROLES U_R WHERE U_R.ID_USER =? AND R.ID_ROLE = U_R.ID_ROLE";
+        $data = getDataPreparedQuerySQL($sql, "i", $role->getId());
+        if (!empty($data)) {
+            return $this->asRoles($data);
+        }
+    }
+    public function asRoles(array $array)
+    {
+        return array_map([$this, 'asRole'], $array);
+    }
+    public function asRole(array $array)
+    {
+        return
+            new Role($array);
+    }
+
+    public static function findByName($name)
+    {
+        $sql = "SELECT * FROM ROLES WHERE name = ?";
         $data = getDataPreparedQuerySQL($sql, "s", $name);
-        $role = new Role($data[0]["ID_ROLE"],$data[0]["NAME"]);
-        return $role;
+        return !empty($data) ? new Role($data[0]) : false;
+    }
+
+    public static function findById($id)
+    {
+        $sql = "SELECT * FROM ROLES WHERE ID_ROLE=?";
+        $data = getDataPreparedQuerySQL($sql, "i", $id);
+        return !empty($data) ? new Role($data[0]) : false;
+    }
+
+    public static function insert(Role $role)
+    {
+        $sql = "INSERT INTO ROLES VALUES (?,?)";
+        return preparedQuerySQLObject($sql, "is", $role, ["id", "name"]) ? $role->setId(getId()) : false;
+    }
+    public static function edit(Role $role)
+    {
+        $sql = "UPDATE ROLES SET name = ? WHERE id_role = ?";
+        return preparedQuerySQLObject($sql, "si", $role, ["name", "id"]) ? $role : false;
+    }
+
+    public static function delete($id)
+    {
+
+        $sql = "DELETE FROM ROLES WHERE ID_ROLE = ?";
+        return preparedQuerySQL($sql, "i", $id);
+    }
+
+    public function toArray()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+        ];
     }
 }

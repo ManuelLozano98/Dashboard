@@ -1,6 +1,9 @@
 <?php
 require_once 'header.php';
 ?>
+<!-- Select 2 -->
+<link rel="stylesheet" href="<?php echo PATHP ?>plugins/select2/css/select2.min.css">
+<link rel="stylesheet" href="<?php echo PATHP ?>plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -76,6 +79,18 @@ require_once 'header.php';
                                                 <span id="counter">0/255</span>
                                             </small>
                                         </div>
+                                        <div class="form-group">
+                                            <label for="price">Price</label>
+                                            <div class="input-group">
+                                                <!-- <input type="text" inputmode="decimal" pattern="^\d+(\.\d{1,2})?$"
+                                                name="price" class="form-control" id="price" /> -->
+                                                <input type="number" min="0" step="0.01" class="form-control" id="price"
+                                                    name="price" placeholder="Enter price">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">€</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <label for="stock">Stock</label>
@@ -109,9 +124,11 @@ require_once 'header.php';
                                     <div class="tab-pane fade" id="tab2" role="tabpanel">
                                         <div class="form-group">
                                             <label for="categorySelect">Select Category</label>
-                                            <select id="categorySelect" name="id_category" class="form-control">
+                                            <select id="categorySelect" name="id_category" class="form-control select2">
                                             </select>
-                                            <a id="categoriesModal" style="display:none" href="categories?openModal=true" target="_blank">Don't have any categories? Add one</a>
+                                            <a id="categoriesModal" style="display:none"
+                                                href="categories?openModal=true" target="_blank">Don't have any
+                                                categories? Add one</a>
                                         </div>
                                     </div>
 
@@ -169,21 +186,31 @@ require_once 'header.php';
                                     <div class="tab-pane fade show active" id="edit-tab1" role="tabpanel">
                                         <div class="form-group">
                                             <label for="edit-name">Name</label>
-                                            <input type="text" class="form-control" name="edit-name" id="edit-name"
+                                            <input type="text" class="form-control" name="name" id="edit-name"
                                                 placeholder="Write a name" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="edit-description">Description</label>
-                                            <textarea id="edit-description" name="edit-description" class="form-control"
+                                            <textarea id="edit-description" name="description" class="form-control"
                                                 rows="4" maxlength="255" placeholder="Write here..."></textarea>
                                             <small class="form-text text-muted text-right">
                                                 <span id="edit-counter">0/255</span>
                                             </small>
                                         </div>
+                                        <div class="form-group">
+                                            <label for="edit-price">Price</label>
+                                            <div class="input-group">
+                                                <input type="number" min="0" step="0.01" class="form-control"
+                                                    id="edit-price" name="price" placeholder="Enter price">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">€</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <label for="edit-stock">Stock</label>
-                                                <input type="number" min="0" class="form-control" name="edit-stock"
+                                                <input type="number" min="0" class="form-control" name="stock"
                                                     id="edit-stock" required>
                                             </div>
                                             <div class="form-group col-md-6">
@@ -202,7 +229,7 @@ require_once 'header.php';
                                                     </svg>
                                                     Generate code
                                                 </button>
-                                                <input type="number" min="0" class="form-control" name="edit-code"
+                                                <input type="number" min="0" class="form-control" name="code"
                                                     id="edit-code" required>
                                                 <svg id="edit-barcode"></svg>
                                             </div>
@@ -217,8 +244,8 @@ require_once 'header.php';
                                     <div class="tab-pane fade" id="edit-tab2" role="tabpanel">
                                         <div class="form-group">
                                             <label for="edit-categorySelect">Select Category</label>
-                                            <select id="edit-categorySelect" name="edit-id_category"
-                                                class="form-control">
+                                            <select id="edit-categorySelect" name="id_category"
+                                                class="form-control select2">
                                             </select>
                                         </div>
                                     </div>
@@ -227,8 +254,7 @@ require_once 'header.php';
                                     <div class="tab-pane fade" id="edit-tab3" role="tabpanel">
                                         <div class="form-group">
                                             <label for="edit-image">Upload or change image</label>
-                                            <input type="file" id="edit-image" name="edit-image"
-                                                class="form-control-file">
+                                            <input type="file" id="edit-image" name="image" class="form-control-file">
                                             <img width="200px" height="200px" alt="edit-img" id="edit-img" />
                                         </div>
                                     </div>
@@ -279,6 +305,7 @@ require_once 'header.php';
                                                                 <th>Name</th>
                                                                 <th>Code</th>
                                                                 <th>Description</th>
+                                                                <th>Price</th>
                                                                 <th>Category</th>
                                                                 <th>Image</th>
                                                                 <th>Stock</th>
@@ -331,6 +358,8 @@ require_once 'header.php';
     <script src="<?php echo PATHP?>plugins/sweetalert2/sweetalert2.min.js"></script>
     <script src="<?php echo PATHP?>plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
     <script src="<?php echo PATHP?>plugins/jsbarcode/JsBarcode.all.min.js"></script>
+    <!-- Select2 -->
+    <script src="<?php echo PATHP?>plugins/select2/js/select2.full.min.js"></script>
     <!-- AdminLTE App -->
     <script src="<?php echo PATHP?>dist/js/adminlte.min.js"></script>
     <!-- Generic script for utilities -->

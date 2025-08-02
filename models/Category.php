@@ -11,8 +11,7 @@
  *
  * @author Usuario
  */
-require_once '../configurations/database.php';
-require_once 'Response.php';
+require_once __DIR__ . '/../configurations/database.php';
 
 class Category
 {
@@ -21,147 +20,83 @@ class Category
     private $description;
     private $active;
 
-    private Response $response;
 
-    function __construct()
+    function __construct($data = [])
     {
-        $this->response = new Response();
+        $this->id = $data['id_category'] ?? "";
+        $this->name = $data['name'] ?? "";
+        $this->description = $data['description'] ?? "";
+        $this->active = $data['active'] ?? 1;
+
     }
 
-
-    private function insert($name, $description = "")
+    public function toArray()
     {
-        if ($this->findByName($name)) {
-            $this->response->getAddConflictMessage("Category");
-            return $this->response->buildResponse();
-        }
-
-        $sql = "INSERT INTO CATEGORIES (name,description,active) VALUES (?,?,'1')";
-        preparedQuerySQL($sql, "ss", $name, $description);
-        $this->response->getCreatedSuccesfullyMessage("Category");
-        $this->response->setData($this->findByName($name));
-        return $this->response->buildResponse();
+        return [
+            'id' => (int) $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'active' => (int) $this->active,
+        ];
     }
 
-    private function edit($id, $name, $description, $active)
+    public static function insert(Category $category)
     {
-        $dbCategory = $this->findById($id);
-        if (!$dbCategory) {
-            $this->response->getUpdatedNotFoundMessage("Category");
-            return $this->response->buildResponse();
-        }
-        $nameTaken = $this->findByName($name);
-        if ($nameTaken) {
-            if ($nameTaken[0]["name"] === $name && $dbCategory["id_category"] !== $nameTaken[0]["id_category"]) { // Checks if the name of the category is already taken
-                $this->response->getUpdatedExistsMessage(("Category"));
-                return $this->response->buildResponse();
-            }
-        }
+
+        $sql = "INSERT INTO CATEGORIES VALUES (?,?,?,?)";
+        return preparedQuerySQL($sql, "issi", $category->getId(), $category->getName(), $category->getDescription(), $category->getActive()) ? $category->setId(getId()) : false;
+
+    }
+
+    public static function edit(Category $category)
+    {
 
         $sql = "UPDATE CATEGORIES SET NAME=?, description=?, active=? WHERE ID_CATEGORY=?";
-        preparedQuerySQL($sql, "ssii", $name, $description, $active, $id);
-        $this->response->getUpdatedSuccesfullyMessage("Category");
-        $this->response->setData($this->findById($id));
-        return $this->response->buildResponse();
+        return preparedQuerySQL($sql, "ssii", $category->getName(), $category->getDescription(), $category->getActive(), $category->getId()) ? $category : false;
     }
-    public function delete($id)
+    public static function delete($id)
     {
-        $dbCategory = $this->findById($id);
-        if (!$dbCategory) {
-            $this->response->getDeletedNotFoundMessage("Category");
-            return $this->response->buildResponse();
-        }
         $sql = "DELETE FROM CATEGORIES WHERE ID_CATEGORY = ?";
-        preparedQuerySQL($sql, "i", $id);
-        $this->response->getDeletedSuccesfullyMessage("Category");
-        return $this->response->buildResponse();
-    }
-
-
-    public function disable($id)
-    {
-        $sql = "UPDATE CATEGORIES SET ACTIVE='0' WHERE ID_CATEGORY=?";
         return preparedQuerySQL($sql, "i", $id);
     }
 
-    public function enable($id)
-    {
-        $sql = "UPDATE CATEGORIES SET ACTIVE='1' WHERE ID_CATEGORY=?";
-        return preparedQuerySQL($sql, "i", $id);
-    }
 
-    public function findById($id)
+    public static function findById($id)
     {
         $sql = "SELECT * FROM CATEGORIES WHERE ID_CATEGORY=?";
         $data = getDataPreparedQuerySQL($sql, "i", $id);
-        return $data ? $data[0] : null;
+        return !empty($data) ? new Category($data[0]) : false;
+
     }
 
 
-    public function getCategories()
+    public static function getAll()
     {
         $sql = "SELECT * FROM CATEGORIES";
-        $records = $this->getCountCategories();
         $query = querySQL($sql);
-        $data = array(
-            "records" => (int) $records[0]["RECORDS"],
-            "data" => $query
-        );
-        return $data;
+        $categories = [];
+        foreach ($query as $category) {
+            $categories[] = new Category($category);
+        }
+        return $categories;
+
     }
-    public function getCategoriesName(){
-        $sql = "SELECT ID_CATEGORY, NAME FROM CATEGORIES";
-        $records = $this->getCountCategories();
+    public static function findByIdAndName()
+    {
+        $sql = "SELECT id_category, name FROM CATEGORIES";
         $query = querySQL($sql);
-        $data = array(
-            "records" => (int) $records[0]["RECORDS"],
-            "data" => $query
-        );
-        return $data;
+        $categories = [];
+        foreach ($query as $category) {
+            $categories[] = new Category($category);
+        }
+        return $categories;
     }
 
-    public function getCountCategories()
-    {
-        $sql = "SELECT COUNT(*) AS RECORDS FROM CATEGORIES";
-        return querySQL($sql);
-    }
-    public function findByName($name)
+    public static function findByName($name)
     {
         $sql = "SELECT * FROM CATEGORIES WHERE NAME = ?";
         $data = getDataPreparedQuerySQL($sql, "s", $name);
-        return $data;
-    }
-    public function insertOrEdit($data, $method)
-    {
-        $flag = $this->validateFields($data, $method);
-        isset($data["description"]) ? $data["description"] : $data["description"] = ""; //Optional param
-        if ($flag === TRUE) {
-            if ($method === "POST") {
-                return $this->insert($data["name"], $data["description"]);
-            } else {
-                return $this->edit($data["id"], $data["name"], $data["description"], $data["active"]);
-            }
-        }
-        return $flag;
-    }
-    private function validateFields($fields, $method)
-    {
-        $this->response->getRequiredFieldsMissingMessage();
-        if ($method === "POST") {
-            if (isset($fields["name"])) {
-                if (!empty($fields["name"])) {
-                    return true;
-                }
-            }
-            $this->response->setDetails(['name' => "This field is required"]);
-            return $this->response->buildResponse();
-        } else {
-            if (!isset($fields["id"]))
-                $this->response->setDetails(['id' => "This field is required"]);
-            if (!isset($fields["name"]))
-                $this->response->setDetails(['name' => "This field is required"]);
-            return $this->response->getDetails() ? $this->response->buildResponse() : true;
-        }
+        return !empty($data) ? new Category($data[0]) : false;
     }
 
     /**

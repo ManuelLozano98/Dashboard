@@ -46,6 +46,7 @@ function insert() {
       data: form,
       processData: false,
       contentType: false,
+      dataType: "json",
       success: function (response) {
         getSuccessResponse(response, getUsers);
       },
@@ -81,11 +82,11 @@ function deleteItem(id) {
   getDeleteMsg().then((result) => {
     if (result.isConfirmed) {
       $.ajax({
-        url: `api/users?id=${id}`,
+        url: `api/users/${id}`,
         type: "DELETE",
+        dataType: "json",
         success: function (result) {
-          toastr.success(result.message);
-          getUsers();
+          getSuccessResponse(result, getUsers);
         },
         error: function (xhr) {
           getErrorResponse(xhr);
@@ -97,7 +98,7 @@ function deleteItem(id) {
 function edit() {
   if (isFormValid($('#form-edit'))) {
     let form = new FormData($("#form-edit")[0]);
-    form.append("id_user", $("#id_user").val());
+    form.append("id", $("#id_user").val());
     form.append("_method", "PUT");
     form.append("active", $("#customSwitch1").is(":checked") === true ? 1 : 0);
     $.ajax({
@@ -106,6 +107,7 @@ function edit() {
       data: form,
       processData: false,
       contentType: false,
+      dataType: "json",
       success: function (result) {
         getSuccessResponse(result, getUsers);
       },
@@ -128,7 +130,7 @@ function getUsers() {
       const data = response.data;
       if (!data || data.length === 0) return;
       const columns = Object.keys(data[0]).map(key => {
-        if (key === "IMAGE") {
+        if (key === "image") {
           return {
             data: key,
             render: function (data) {
@@ -138,13 +140,27 @@ function getUsers() {
             }
           };
         }
-        if (key === "ACTIVE") {
+        if (key === "active") {
           return {
             data: key,
             render: function (data) {
-              return data === "0" ? "User not verified / activated" : "Activated";
+              return data === 0 ? "Unverified or inactive user" : "Yes";
 
             }
+          };
+        }
+        if (key === "document_type") {
+          return {
+            data: key,
+            render: function (data, type, row) {
+              return row.document_name;
+            }
+          };
+        }
+        if (key === "document_name") { // Hide the column because I already show the content of this column in another one
+          return {
+            data: key,
+            visible: false
           };
         }
         return { data: key };
@@ -169,35 +185,34 @@ function loadEditForm() {
       row = row.prev(); // needed for responsive tables
     }
     let data = table.row(row).data();
-    console.log(data);
-    $("#id_user").val(data.ID_USER);
-    $("#edit-name").val(data.NAME);
-    $("#edit-username").val(data.USERNAME);
-    $("#edit-phone").val(data.PHONE);
-    $("#edit-address").val(data.ADDRESS);
-    $("#edit-email").val(data.EMAIL);
-    $("#edit-document").val(data.DOCUMENT);
+    $("#id_user").val(data.id);
+    $("#edit-name").val(data.name);
+    $("#edit-username").val(data.username);
+    $("#edit-phone").val(data.phone);
+    $("#edit-address").val(data.address);
+    $("#edit-email").val(data.email);
+    $("#edit-document").val(data.document);
     loadDocumentTypes("edit-document_type");
     for (let element of document.getElementById("edit-document_type").children) { // Find the document
       element.removeAttribute("selected");
-      if (data.ID_CATEGORY === element.value) {
+      if (data.document_type === element.value) {
         element.setAttribute("selected", true);
       }
     }
-    if (data.IMAGE !== "") { // If the image exists will show up
+    if (data.image !== "") { // If the image exists will show up
       $("#edit-img").show();
-      $("#edit-img").attr("src", "files/users_img/" + data.IMAGE);
+      $("#edit-img").attr("src", "files/users_img/" + data.image);
     }
     else { // If the image does not exists will hide
       $("#edit-img").hide();
     }
-    data.ACTIVE === "0" ? $("#customSwitch1").prop("checked", false) : $("#customSwitch1").prop("checked", true);
+    data.active === 0 ? $("#customSwitch1").prop("checked", false) : $("#customSwitch1").prop("checked", true);
   });
 }
 
 function getDocumentTypes() {
   return $.ajax({
-    url: "api/users?getDocumentTypes",
+    url: "api/users/documentTypes",
     type: "GET",
     dataType: "json"
   });
@@ -212,8 +227,8 @@ function loadDocumentTypes(selectHtml) {
         let select = document.getElementById(selectHtml);
         for (let index = 0; index < result["data"].length; index++) {
           let option = document.createElement("option");
-          option.text = result["data"][index].NAME;
-          option.value = result["data"][index].ID_DOCUMENT_TYPE;
+          option.text = result["data"][index].name;
+          option.value = result["data"][index].id;
           select.appendChild(option);
         }
       })

@@ -124,7 +124,7 @@ function loadCounter() {
 }
 
 function getSuccessResponse(response, fn) {
-    if (response.status != "201") {
+    if (response.status >= 400) { // >= 400 Error codes
         if (response.details) {
             response.message += response.details.map((element) => {
                 return `<br> ${Object.keys(element)} => ${Object.values(element)}`;
