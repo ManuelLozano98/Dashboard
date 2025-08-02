@@ -62,6 +62,17 @@ class User
         return $users;
     }
 
+    public static function getUsernames()
+    {
+        $sql = "SELECT id_user, username FROM users";
+        $query = querySQL($sql);
+        $users = [];
+        foreach ($query as $user) {
+            $users[] = new User($user);
+        }
+        return $users;
+    }
+
     public static function insert(User $user)
     {
         $sql = "INSERT INTO USERS VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
