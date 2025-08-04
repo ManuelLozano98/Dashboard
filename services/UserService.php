@@ -41,6 +41,8 @@ class UserService
 
         if ($data && $data->getActive() === 1 && $this->checkPassword($password, $data->getPassword())) {
             $response->loginSuccess();
+            session_start();
+            $_SESSION["user"] = $data;
         } else {
             $response->invalidCredentials();
         }
