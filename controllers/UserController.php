@@ -20,7 +20,8 @@ class UserController
     }
     public function logout()
     {
-        require VIEWS_PATH . '/logout.php';
+        session_destroy();
+        header("Location:" . ROOT . "/login");
     }
 
 
