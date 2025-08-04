@@ -55,4 +55,8 @@ class HomeController
         header("Location: /AdminDashboard/email/confirm?user=not-registered");
         exit;
     }
+    public function isLogged()
+    {
+        return !empty($_SESSION["user"]);
+    }
 }
