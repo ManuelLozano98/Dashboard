@@ -121,6 +121,20 @@ SELECT U_R.id_user FROM USERS_ROLES U_R WHERE U_R.id_role = ?)";
         return preparedQuerySQL($sql, "i", $usersRoles->getId());
     }
 
+    public static function hasRole(User $user, $rolename)
+    {
+        $sql = "SELECT id_user_role FROM users_roles WHERE id_user = ? AND id_role = (select id_role from roles where name = ?)";
+        $data = getDataPreparedQuerySQL($sql, "is", $user->getId(), $rolename);
+        return !empty($data);
+    }
+    public static function isAdmin(User $user)
+    {
+        // return self::hasRole($user,"admin"); 
+        $sql = "SELECT id_user_role FROM users_roles WHERE id_user = ? AND id_role = (select id_role from roles where name = ?)";
+        $data = getDataPreparedQuerySQL($sql, "is", $user->getId(), "admin");
+        return !empty($data);
+    }
+
     /**
      * Get the value of userId
      */
