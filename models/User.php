@@ -154,6 +154,15 @@ class User
         return $users;
     }
 
+    public static function getUserCountLast7Days()
+    {
+        $sql = "SELECT COUNT(id_user) as 'Total', DATE(registration_date) as 'Registration date'
+        FROM users
+        WHERE DATE(registration_date) > DATE(NOW() - INTERVAL 7 DAY)";
+        $data = querySQL($sql);
+        return $data;
+    }
+
     /**
      * Get the value of id
      */

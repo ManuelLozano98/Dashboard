@@ -226,4 +226,8 @@ class UserService
         $this->documentTypeService = new DocumentTypeService();
         return $this->documentTypeService->getDocument_Types();
     }
+
+    public function getUserCountLast7Days(){
+        return User::getUserCountLast7Days();
+    }
 }
