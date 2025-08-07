@@ -310,6 +310,7 @@ require_once 'header.php';
                                                                 <th>Image</th>
                                                                 <th>Stock</th>
                                                                 <th>Active</th>
+                                                                <th>Date</th>
                                                                 <th>Actions</th>
                                                             </thead>
                                                             <tbody>

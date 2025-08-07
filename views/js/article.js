@@ -122,6 +122,9 @@ function getArticles() {
           return data === 0 ? "No" : "Yes"
         }
       },
+      {
+        data: "created_at"
+      },
       getActionsColumnDataTable(),
     ]
   });
