@@ -25,11 +25,10 @@ $adminRoutes = [
 
 ];
 $user = $_SESSION["user"] ?? NULL;
-if ($user) {
     if (!$userRoleService->hasAdminRole($user) && in_array($resource, $adminRoutes)) {
         $uri = ROOT . '/notFound'; // Send to 404.php because that URL does not exist
-    }
 }
+
 
 
 switch ($uri) {

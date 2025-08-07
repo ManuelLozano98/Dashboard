@@ -169,8 +169,11 @@ class UserRolesService
         return $this->userService;
     }
 
-    public function hasAdminRole(User $user)
+    public function hasAdminRole($user)
     {
+        if(!$user){
+            return false;
+        }
         return UsersRoles::isAdmin($user);
     }
     public function hasRole(User $user, $rolename)
