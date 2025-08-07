@@ -25,6 +25,7 @@ class Article
     private string $price;
 
     private ?int $id_category;
+    private string $created_at;
 
 
     function __construct($data = [])
@@ -38,6 +39,7 @@ class Article
         $this->stock = $data['stock'] ?? 0;
         $this->price = $data['price'] ?? "";
         $this->id_category = $data['id_category'] ?? NULL;
+        $this->created_at = empty($data['created_at']) ? (new Datetime("now"))->format('Y-m-d H:i:s') : $data['created_at'];
     }
 
     public static function getAll()
@@ -64,8 +66,8 @@ class Article
 
     public static function insert(Article $article)
     {
-        $sql = "INSERT INTO ARTICLES (name, image, description, code, price, stock, active, id_category, id_article) VALUES (?,?,?,?,?,?,?,?,?)";
-        return preparedQuerySQL($sql, "sssssiiii", $article->getName(), $article->getImage(), $article->getDescription(), $article->getCode(), $article->getPrice(), $article->getStock(), $article->getActive(), $article->getIdCategory(), $article->getId()) ? $article->setId(getId()) : false;
+        $sql = "INSERT INTO ARTICLES (name, image, description, code, price, stock, active, id_category, id_article,created_at) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        return preparedQuerySQL($sql, "sssssiiiis", $article->getName(), $article->getImage(), $article->getDescription(), $article->getCode(), $article->getPrice(), $article->getStock(), $article->getActive(), $article->getIdCategory(), $article->getId(),$article->getCreatedAt()) ? $article->setId(getId()) : false;
 
     }
 
@@ -101,6 +103,14 @@ class Article
         $sql = "SELECT * FROM ARTICLES WHERE CODE = ?";
         $data = getDataPreparedQuerySQL($sql, "s", $code);
         return !empty($data) ? new Article($data[0]) : false;
+    }
+
+    public static function getNewArticlesCount(){
+        $sql = "SELECT COUNT(id_article) as 'Total', DATE(created_at) as 'Date'
+        FROM articles
+        WHERE DATE(created_at) > DATE(NOW() - INTERVAL 1 DAY)";
+        $data = querySQL($sql);
+        return $data;
     }
 
     /**
@@ -269,6 +279,18 @@ class Article
 
         return $this;
     }
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt($created_at)
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
 
     public function toArray()
     {
@@ -281,7 +303,8 @@ class Article
             'price' => $this->price,
             'stock' => $this->stock,
             'id_category' => $this->id_category,
-            'active' => $this->active
+            'active' => $this->active,
+            'created_at' => $this->created_at
         ];
 
     }
