@@ -136,5 +136,8 @@ class ArticleService
             return "Extension not allowed";
         }
     }
+    public function getNewArticlesCount(){
+        return Article::getNewArticlesCount();
+    }
 
 }
